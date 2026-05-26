@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>自己紹介</title>
+  <title>今日好き メンバープロフィールまとめ</title>
   <style>
     :root {
-      color-scheme: light;
-      --bg: #f4f1ea;
+      --bg: #fff7f6;
       --surface: #ffffff;
-      --text: #222222;
-      --muted: #666666;
-      --accent: #1f7a8c;
-      --line: #ddd7ce;
+      --text: #241c1f;
+      --muted: #6f6267;
+      --pink: #e84d75;
+      --coral: #ff7a59;
+      --mint: #3ba99c;
+      --line: #f0d9de;
+      --shadow: 0 18px 45px rgba(151, 65, 86, 0.12);
     }
 
     * {
@@ -21,164 +23,390 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
       font-family: "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
       color: var(--text);
-      background: var(--bg);
+      background:
+        radial-gradient(circle at 16% 8%, rgba(232, 77, 117, 0.14), transparent 32%),
+        linear-gradient(180deg, #fff7f6 0%, #fff 45%, #f7fbfa 100%);
       line-height: 1.7;
     }
 
-    main {
-      width: min(920px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 48px 0;
+    a {
+      color: inherit;
     }
 
-    .profile {
+    .hero {
+      min-height: 72vh;
       display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 32px;
-      align-items: center;
-      padding: 36px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      box-shadow: 0 18px 50px rgba(44, 38, 30, 0.08);
-    }
-
-    .avatar {
-      width: 180px;
-      aspect-ratio: 1;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: var(--accent);
+      align-items: end;
+      padding: 32px 20px 42px;
+      background:
+        linear-gradient(120deg, rgba(36, 28, 31, 0.66), rgba(232, 77, 117, 0.36)),
+        url("https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1800&q=80") center/cover;
       color: #ffffff;
-      font-size: 64px;
+    }
+
+    .hero-inner,
+    .content {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin: 0 0 14px;
+      padding: 6px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.52);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      font-size: 14px;
       font-weight: 700;
     }
 
     h1 {
+      max-width: 780px;
       margin: 0;
-      font-size: clamp(32px, 6vw, 56px);
-      line-height: 1.15;
+      font-size: clamp(38px, 8vw, 82px);
+      line-height: 1.06;
     }
 
-    .role {
-      margin: 10px 0 0;
-      color: var(--accent);
-      font-size: 18px;
-      font-weight: 700;
+    .lead {
+      max-width: 680px;
+      margin: 18px 0 0;
+      font-size: clamp(16px, 2.4vw, 20px);
     }
 
-    .intro {
-      margin: 24px 0 0;
-      color: var(--muted);
-    }
-
-    section {
-      margin-top: 28px;
-      padding: 28px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-    }
-
-    h2 {
-      margin: 0 0 14px;
-      font-size: 22px;
-    }
-
-    ul {
-      margin: 0;
-      padding-left: 20px;
-    }
-
-    .links {
+    .hero-stats {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 18px;
+      margin-top: 28px;
     }
 
-    .links a {
-      display: inline-flex;
+    .stat {
+      min-width: 136px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      backdrop-filter: blur(8px);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      font-size: 13px;
+    }
+
+    .content {
+      padding: 30px 20px 54px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto auto;
+      gap: 12px;
       align-items: center;
-      min-height: 42px;
-      padding: 8px 14px;
-      color: #ffffff;
-      background: var(--accent);
+      margin-bottom: 22px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 12px;
+      z-index: 2;
+      backdrop-filter: blur(12px);
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--line);
       border-radius: 6px;
-      text-decoration: none;
+      padding: 9px 12px;
+      color: var(--text);
+      background: #ffffff;
+      font: inherit;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .portrait {
+      min-height: 174px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px;
+      color: #ffffff;
+      background:
+        linear-gradient(135deg, rgba(232, 77, 117, 0.95), rgba(255, 122, 89, 0.88)),
+        repeating-linear-gradient(45deg, transparent 0 14px, rgba(255, 255, 255, 0.16) 14px 16px);
+    }
+
+    .portrait.has-photo {
+      position: relative;
+      min-height: 260px;
+      background: #241c1f;
+    }
+
+    .portrait.has-photo::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 36%, rgba(36, 28, 31, 0.78));
+      z-index: 1;
+    }
+
+    .portrait.has-photo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .portrait.has-photo .nickname,
+    .portrait.has-photo .gender {
+      position: relative;
+      z-index: 2;
+    }
+
+    .card:nth-child(3n) .portrait {
+      background:
+        linear-gradient(135deg, rgba(59, 169, 156, 0.94), rgba(232, 77, 117, 0.82)),
+        repeating-linear-gradient(45deg, transparent 0 14px, rgba(255, 255, 255, 0.15) 14px 16px);
+    }
+
+    .nickname {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .gender {
+      flex: 0 0 auto;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.22);
+      font-size: 13px;
       font-weight: 700;
     }
 
-    .links a:hover {
-      background: #155e6c;
+    .body {
+      padding: 18px;
     }
 
-    footer {
-      margin-top: 24px;
+    .name {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .meta div {
+      min-height: 58px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: #fff7f6;
+    }
+
+    .meta span {
+      display: block;
       color: var(--muted);
-      text-align: center;
-      font-size: 14px;
+      font-size: 12px;
     }
 
-    @media (max-width: 680px) {
-      main {
-        padding: 24px 0;
+    .meta strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .sns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .sns span {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #eef8f6;
+      color: #236d65;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .note {
+      margin: 24px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 760px) {
+      .hero {
+        min-height: 64vh;
       }
 
-      .profile {
+      .toolbar {
         grid-template-columns: 1fr;
-        padding: 28px;
+        position: static;
       }
 
-      .avatar {
-        width: 132px;
+      .meta {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <main>
-    <article class="profile">
-      <div class="avatar" aria-label="プロフィール画像の代替表示">名</div>
-      <div>
-        <h1>山田 太郎</h1>
-        <p class="role">Web制作とデザインが好きな学生</p>
-        <p class="intro">
-          こんにちは。新しい技術を学びながら、見やすく使いやすいWebページを作っています。
-          このページでは、私の好きなことやできることを簡単に紹介します。
-        </p>
-        <div class="links" aria-label="連絡先リンク">
-          <a href="mailto:your-email@example.com">メール</a>
-          <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
-        </div>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">今日、好きになりました。卒業編2026</p>
+      <h1>メンバーのプロフィールをまとめてチェック</h1>
+      <p class="lead">
+        名前、出身地、身長、SNSをカード形式で整理。気になるメンバーを検索や絞り込みですぐ探せます。
+      </p>
+      <div class="hero-stats" aria-label="掲載情報">
+        <div class="stat"><strong>13</strong><span>掲載メンバー</span></div>
+        <div class="stat"><strong>6</strong><span>高校2年生</span></div>
+        <div class="stat"><strong>7</strong><span>高校3年生</span></div>
       </div>
-    </article>
+    </div>
+  </header>
 
-    <section>
-      <h2>好きなこと</h2>
-      <ul>
-        <li>Webサイトのデザインを考えること</li>
-        <li>HTML、CSS、JavaScriptを使った制作</li>
-        <li>音楽を聴きながら作業すること</li>
-      </ul>
-    </section>
+  <main class="content">
+    <form class="toolbar" aria-label="メンバー検索">
+      <input id="search" type="search" placeholder="名前・出身地・SNSで検索">
+      <select id="gender">
+        <option value="">全員</option>
+        <option value="boys">男子メンバー</option>
+        <option value="girls">女子メンバー</option>
+      </select>
+      <select id="prefecture">
+        <option value="">すべての出身地</option>
+        <option>東京</option>
+        <option>神奈川</option>
+        <option>宮崎</option>
+        <option>長野</option>
+        <option>広島</option>
+        <option>北海道</option>
+        <option>福岡</option>
+        <option>埼玉</option>
+        <option>千葉</option>
+      </select>
+    </form>
 
-    <section>
-      <h2>できること</h2>
-      <ul>
-        <li>シンプルな自己紹介ページの作成</li>
-        <li>スマートフォンでも見やすいレイアウト調整</li>
-        <li>基本的なHTMLとCSSの編集</li>
-      </ul>
-    </section>
-
-    <footer>
-      <p>&copy; 2026 Taro Yamada</p>
-    </footer>
+    <section class="grid" id="members" aria-label="メンバー一覧"></section>
+    <p class="note">
+      プロフィール情報はABEMA公式の「卒業編2026」メンバー紹介を参考にしています。写真は掲載せず、カードデザインで表現しています。
+    </p>
   </main>
+
+  <script>
+    const members = [
+      { nick: "はると", name: "今井 暖人", kana: "いまい はると", gender: "boys", birthday: "2008.05.09", grade: "17歳 高校2年", height: "172cm", prefecture: "東京", sns: ["Instagram: harutosroom", "TikTok: はるとはるお"] },
+      { nick: "いおう", name: "榎田 一王", kana: "えのきだ いおう", gender: "boys", birthday: "2007.11.25", grade: "18歳 高校3年", height: "185cm", prefecture: "宮崎", sns: ["Instagram: iou025", "X: iou025", "TikTok: iou025"] },
+      { nick: "はる", name: "谷本 晴", kana: "たにもと はる", gender: "boys", birthday: "2008.01.21", grade: "18歳 高校3年", height: "175cm", prefecture: "神奈川", sns: ["Instagram: halgym.ex", "X: haru_gymdayo", "TikTok: hall.gymnastics"] },
+      { nick: "りょうすけ", name: "曽根 凌輔", kana: "そね りょうすけ", gender: "boys", birthday: "2007.08.29", grade: "18歳 高校3年", height: "176cm", prefecture: "神奈川", sns: ["Instagram: ryou_ske0829", "TikTok: ryousuke_0829"] },
+      { nick: "けいすけ", name: "中村 圭佑", kana: "なかむら けいすけ", gender: "boys", birthday: "2009.01.22", grade: "17歳 高校2年", height: "173cm", prefecture: "長野", sns: ["Instagram: keiiii_.22", "TikTok: keiiii_.22"] },
+      { nick: "とき", name: "中村 駿希", kana: "なかむら とき", gender: "boys", birthday: "2007.10.24", grade: "18歳 高校3年", height: "171cm", prefecture: "広島", sns: ["Instagram: ntk10_24", "TikTok: ntk10_24"] },
+      { nick: "りあ", name: "米澤 りあ", kana: "よねざわ りあ", gender: "girls", birthday: "2007.05.09", grade: "18歳 高校3年", height: "152cm", prefecture: "北海道", sns: ["Instagram: yonezawa_ria", "X: yonezawa_ria", "TikTok: yonezawa_ria"] },
+      { nick: "ひなの", name: "瀬川 陽菜乃", kana: "せがわ ひなの", gender: "girls", birthday: "2008.02.06", grade: "18歳 高校3年", height: "162cm", prefecture: "福岡", photo: "images.jpg", sns: ["Instagram: ponpon___2008", "X: ponpon___2008", "TikTok: ponpon_20080"] },
+      { nick: "あやな", name: "葛西 杏也菜", kana: "かさい あやな", gender: "girls", birthday: "2007.04.28", grade: "18歳 高校3年", height: "165cm", prefecture: "東京", sns: ["Instagram: ayana_kasai_official", "TikTok: ayana.__.07"] },
+      { nick: "さわ", name: "紗和", kana: "さわ", gender: "girls", birthday: "2009.02.28", grade: "16歳 高校2年", height: "152cm", prefecture: "埼玉", sns: ["Instagram: 28_sawa", "X: 28_sawa_", "TikTok: 28_sawa"] },
+      { nick: "ねね", name: "時田 音々", kana: "ときた ねね", gender: "girls", birthday: "2008.11.16", grade: "17歳 高校2年", height: "152cm", prefecture: "千葉", sns: ["Instagram: tokita_nene", "X: nene_tokita", "TikTok: nene_tokita"] },
+      { nick: "おとは", name: "白石 乙華", kana: "しらいし おとは", gender: "girls", birthday: "2009.02.10", grade: "17歳 高校2年", height: "168cm", prefecture: "東京", sns: ["Instagram: otoha_0210_", "X: otoha_shiraishi", "TikTok: ochamacha2"] },
+      { nick: "ゆあ", name: "小林 ゆあ", kana: "こばやし ゆあ", gender: "girls", birthday: "2008.06.04", grade: "17歳 高校2年", height: "153cm", prefecture: "神奈川", sns: ["Instagram: yua__46_", "X: qua__64o", "TikTok: qua__4"] }
+    ];
+
+    const membersRoot = document.querySelector("#members");
+    const searchInput = document.querySelector("#search");
+    const genderInput = document.querySelector("#gender");
+    const prefectureInput = document.querySelector("#prefecture");
+
+    function createCard(member) {
+      const article = document.createElement("article");
+      article.className = "card";
+      article.dataset.gender = member.gender;
+      article.dataset.prefecture = member.prefecture;
+      article.dataset.search = `${member.nick} ${member.name} ${member.kana} ${member.prefecture} ${member.sns.join(" ")}`.toLowerCase();
+
+      article.innerHTML = `
+        <div class="portrait${member.photo ? " has-photo" : ""}">
+          ${member.photo ? `<img src="${member.photo}" alt="${member.name}の写真">` : ""}
+          <h2 class="nickname">${member.nick}</h2>
+          <span class="gender">${member.gender === "boys" ? "男子" : "女子"}</span>
+        </div>
+        <div class="body">
+          <h3 class="name">${member.name}<br><small>${member.kana}</small></h3>
+          <div class="meta">
+            <div><span>生年月日</span><strong>${member.birthday}</strong></div>
+            <div><span>年齢・学年</span><strong>${member.grade}</strong></div>
+            <div><span>身長</span><strong>${member.height}</strong></div>
+            <div><span>出身地</span><strong>${member.prefecture}</strong></div>
+          </div>
+          <div class="sns">${member.sns.map((item) => `<span>${item}</span>`).join("")}</div>
+        </div>
+      `;
+
+      return article;
+    }
+
+    function render() {
+      membersRoot.innerHTML = "";
+      members.forEach((member) => membersRoot.appendChild(createCard(member)));
+      filterCards();
+    }
+
+    function filterCards() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const gender = genderInput.value;
+      const prefecture = prefectureInput.value;
+
+      document.querySelectorAll(".card").forEach((card) => {
+        const matchesKeyword = !keyword || card.dataset.search.includes(keyword);
+        const matchesGender = !gender || card.dataset.gender === gender;
+        const matchesPrefecture = !prefecture || card.dataset.prefecture === prefecture;
+        card.classList.toggle("hidden", !(matchesKeyword && matchesGender && matchesPrefecture));
+      });
+    }
+
+    [searchInput, genderInput, prefectureInput].forEach((input) => {
+      input.addEventListener("input", filterCards);
+    });
+
+    render();
+  </script>
 </body>
 </html>
