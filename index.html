@@ -123,6 +123,82 @@
       backdrop-filter: blur(12px);
     }
 
+    .year-panel,
+    .season-panel {
+      margin-bottom: 22px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .year-panel h2,
+    .season-panel h2 {
+      margin: 0 0 12px;
+      font-size: 22px;
+    }
+
+    .year-buttons,
+    .season-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+      gap: 10px;
+    }
+
+    .year-button,
+    .season-button {
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--text);
+      background: #ffffff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .year-button.active,
+    .season-button.active {
+      color: #ffffff;
+      background: var(--pink);
+      border-color: var(--pink);
+    }
+
+    .year-button:disabled {
+      color: var(--muted);
+      background: #f8f1f3;
+      cursor: not-allowed;
+    }
+
+    .year-summary,
+    .season-summary {
+      margin: 14px 0 0;
+      color: var(--muted);
+    }
+
+    .season-visual {
+      overflow: hidden;
+      margin-bottom: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .season-visual img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+
+    .season-visual figcaption {
+      padding: 10px 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     input,
     select {
       width: 100%;
@@ -306,6 +382,18 @@
   </header>
 
   <main class="content">
+    <section class="year-panel" aria-labelledby="year-title">
+      <h2 id="year-title">見たい年度を選択</h2>
+      <div class="year-buttons" id="yearButtons"></div>
+      <p class="year-summary" id="yearSummary"></p>
+    </section>
+
+    <section class="season-panel" aria-labelledby="season-title">
+      <h2 id="season-title">見たい編を選択</h2>
+      <div class="season-buttons" id="seasonButtons"></div>
+      <p class="season-summary" id="seasonSummary"></p>
+    </section>
+
     <form class="toolbar" aria-label="メンバー検索">
       <input id="search" type="search" placeholder="名前・出身地・SNSで検索">
       <select id="gender">
@@ -324,17 +412,79 @@
         <option>福岡</option>
         <option>埼玉</option>
         <option>千葉</option>
+        <option>大阪</option>
+        <option>京都</option>
+        <option>福島</option>
+        <option>茨城</option>
+        <option>滋賀</option>
+        <option>鹿児島</option>
+        <option>兵庫</option>
+        <option>山口</option>
+        <option>愛知</option>
+        <option>奈良</option>
+        <option>岡山</option>
+        <option>岐阜</option>
+        <option>沖縄</option>
+        <option>静岡</option>
+        <option>新潟</option>
+        <option>石川</option>
+        <option>福井</option>
+        <option>大分</option>
       </select>
     </form>
 
+    <figure class="season-visual hidden" id="seasonVisual">
+      <img id="seasonVisualImage" src="" alt="">
+      <figcaption id="seasonVisualCaption"></figcaption>
+    </figure>
     <section class="grid" id="members" aria-label="メンバー一覧"></section>
     <p class="note">
-      プロフィール情報はABEMA公式の「卒業編2026」メンバー紹介を参考にしています。写真は掲載せず、カードデザインで表現しています。
+      プロフィール情報はABEMA公式のメンバー紹介を参考にしています。写真は追加したメンバーだけ表示しています。
     </p>
   </main>
 
   <script>
-    const members = [
+    const years = [
+      { year: 2026, label: "2026年", description: "2026年の編を選択できます。" },
+      { year: 2025, label: "2025年", description: "ハロン編など、2025年の編を選択できます。" },
+      { year: 2024, label: "2024年", description: "2024年の弾を追加予定です。" },
+      { year: 2023, label: "2023年", description: "2023年の弾を追加予定です。" },
+      { year: 2022, label: "2022年", description: "2022年の弾を追加予定です。" },
+      { year: 2021, label: "2021年", description: "2021年の弾を追加予定です。" },
+      { year: 2020, label: "2020年", description: "2020年の弾を追加予定です。" },
+      { year: 2019, label: "2019年", description: "2019年の弾を追加予定です。" },
+      { year: 2018, label: "2018年", description: "2018年の弾を追加予定です。" },
+      { year: 2017, label: "2017年", description: "2017年の弾を追加予定です。" }
+    ];
+
+    const seasons = {
+      2026: [
+        { id: "sotsugyo-2026", label: "卒業編2026", description: "卒業編2026のメンバーを掲載中です。" },
+        { id: "christchurch", label: "クライストチャーチ編", description: "クライストチャーチ編のメンバーを掲載中です。" },
+        { id: "rayong", label: "ラヨーン編", description: "ラヨーン編のメンバーを掲載中です。" }
+      ],
+      2025: [
+        { id: "sotsugyo-2025-seoul", label: "卒業編2025 in ソウル", description: "卒業編2025 in ソウルのメンバーを掲載中です。" },
+        { id: "sotsugyo-2025-singapore", label: "卒業編2025 in シンガポール", description: "卒業編2025 in シンガポールのメンバーを掲載中です。" },
+        { id: "newzealand", label: "ニュージーランド編", description: "ニュージーランド編のメンバーを掲載中です。" },
+        { id: "mactan", label: "マクタン編", description: "マクタン編のメンバーを掲載中です。" },
+        { id: "halong", label: "ハロン編", description: "ハロン編のメンバーを掲載中です。" },
+        { id: "natsuyasumi-2025", label: "夏休み編2025", description: "夏休み編2025のメンバーを掲載中です。" },
+        { id: "chuncheon", label: "チュンチョン編", description: "チュンチョン編のメンバーを掲載中です。" },
+        { id: "chiangmai", label: "チェンマイ編", description: "チェンマイ編のメンバーを掲載中です。" }
+      ],
+      2024: [{ id: "year-2024", label: "2024年の編", description: "編一覧を追加予定です。" }],
+      2023: [{ id: "year-2023", label: "2023年の編", description: "編一覧を追加予定です。" }],
+      2022: [{ id: "year-2022", label: "2022年の編", description: "編一覧を追加予定です。" }],
+      2021: [{ id: "year-2021", label: "2021年の編", description: "編一覧を追加予定です。" }],
+      2020: [{ id: "year-2020", label: "2020年の編", description: "編一覧を追加予定です。" }],
+      2019: [{ id: "year-2019", label: "2019年の編", description: "編一覧を追加予定です。" }],
+      2018: [{ id: "year-2018", label: "2018年の編", description: "編一覧を追加予定です。" }],
+      2017: [{ id: "year-2017", label: "2017年の編", description: "編一覧を追加予定です。" }]
+    };
+
+    const memberData = {
+      "sotsugyo-2026": [
       { nick: "はると", name: "今井 暖人", kana: "いまい はると", gender: "boys", birthday: "2008.05.09", grade: "17歳 高校2年", height: "172cm", prefecture: "東京", sns: ["Instagram: harutosroom", "TikTok: はるとはるお"] },
       { nick: "いおう", name: "榎田 一王", kana: "えのきだ いおう", gender: "boys", birthday: "2007.11.25", grade: "18歳 高校3年", height: "185cm", prefecture: "宮崎", sns: ["Instagram: iou025", "X: iou025", "TikTok: iou025"] },
       { nick: "はる", name: "谷本 晴", kana: "たにもと はる", gender: "boys", birthday: "2008.01.21", grade: "18歳 高校3年", height: "175cm", prefecture: "神奈川", sns: ["Instagram: halgym.ex", "X: haru_gymdayo", "TikTok: hall.gymnastics"] },
@@ -348,8 +498,192 @@
       { nick: "ねね", name: "時田 音々", kana: "ときた ねね", gender: "girls", birthday: "2008.11.16", grade: "17歳 高校2年", height: "152cm", prefecture: "千葉", sns: ["Instagram: tokita_nene", "X: nene_tokita", "TikTok: nene_tokita"] },
       { nick: "おとは", name: "白石 乙華", kana: "しらいし おとは", gender: "girls", birthday: "2009.02.10", grade: "17歳 高校2年", height: "168cm", prefecture: "東京", sns: ["Instagram: otoha_0210_", "X: otoha_shiraishi", "TikTok: ochamacha2"] },
       { nick: "ゆあ", name: "小林 ゆあ", kana: "こばやし ゆあ", gender: "girls", birthday: "2008.06.04", grade: "17歳 高校2年", height: "153cm", prefecture: "神奈川", sns: ["Instagram: yua__46_", "X: qua__64o", "TikTok: qua__4"] }
-    ];
+      ],
+      "christchurch": [
+      { nick: "とあ", name: "金沢 十亜", kana: "かなざわ とあ", gender: "girls", birthday: "未公開", grade: "高校2年", height: "未公開", prefecture: "東京", sns: [] },
+      { nick: "はるめ", name: "伊澤 春苺", kana: "いざわ はるめ", gender: "girls", birthday: "未公開", grade: "高校1年", height: "未公開", prefecture: "京都", sns: [] },
+      { nick: "ゆあ", name: "小林 ゆあ", kana: "こばやし ゆあ", gender: "girls", birthday: "2008.06.04", grade: "高校3年", height: "153cm", prefecture: "神奈川", sns: ["Instagram: yua__46_", "X: qua__64o", "TikTok: qua__4"] },
+      { nick: "ゆうひ", name: "岩間 夕陽", kana: "いわま ゆうひ", gender: "girls", birthday: "未公開", grade: "高校2年", height: "未公開", prefecture: "千葉", sns: [] },
+      { nick: "れな", name: "花守 麗奈", kana: "はなもり れな", gender: "girls", birthday: "未公開", grade: "高校2年", height: "未公開", prefecture: "東京", sns: [] },
+      { nick: "かいと", name: "田代 魁音", kana: "たしろ かいと", gender: "boys", birthday: "未公開", grade: "高校3年", height: "未公開", prefecture: "東京", sns: [] },
+      { nick: "こたろう", name: "桜木 琥太郎", kana: "さくらぎ こたろう", gender: "boys", birthday: "未公開", grade: "高校3年", height: "未公開", prefecture: "大阪", sns: [] },
+      { nick: "とおま", name: "小川 永真", kana: "おがわ とおま", gender: "boys", birthday: "未公開", grade: "高校3年", height: "未公開", prefecture: "福島", sns: [] },
+      { nick: "ゆうま", name: "今野 優誠", kana: "こんの ゆうま", gender: "boys", birthday: "未公開", grade: "高校1年", height: "未公開", prefecture: "茨城", sns: [] },
+      { nick: "りお", name: "酒井 理央", kana: "さかい りお", gender: "boys", birthday: "2008.04.16", grade: "高校3年", height: "170cm", prefecture: "東京", sns: ["Instagram: rio._.s0416", "X: rio041611", "TikTok: rio._.s0416"] }
+      ],
+      "rayong": [
+      { nick: "りお", name: "酒井 理央", kana: "さかい りお", gender: "boys", birthday: "2008.04.16", grade: "17歳 高校3年", height: "170cm", prefecture: "東京", sns: ["Instagram: rio._.s0416", "X: rio041611", "TikTok: rio._.s0416"] },
+      { nick: "すばる", name: "黒崎 昴", kana: "くろさき すばる", gender: "boys", birthday: "2008.06.23", grade: "17歳 高校3年", height: "178cm", prefecture: "神奈川", sns: ["Instagram: kurosak_iii", "TikTok: subarun_run"] },
+      { nick: "れん", name: "五十嵐 蓮", kana: "いがらし れん", gender: "boys", birthday: "2009.04.13", grade: "17歳 高校2年", height: "173cm", prefecture: "神奈川", sns: ["Instagram: igarashi_reen", "X: igarashi_reen", "TikTok: igarashi_reen"] },
+      { nick: "そら", name: "宮崎 宇宙", kana: "みやざき そら", gender: "boys", birthday: "2010.07.07", grade: "15歳 高校1年", height: "172cm", prefecture: "福岡", sns: ["Instagram: sora_.070724", "X: sora070724", "TikTok: sora_.070724"] },
+      { nick: "こうのすけ", name: "江畑 皇之介", kana: "えばた こうのすけ", gender: "boys", birthday: "2009.10.17", grade: "16歳 高校2年", height: "175cm", prefecture: "埼玉", sns: ["Instagram: konosuke_17_", "X: Konosuke_17", "TikTok: konosuke_17_"] },
+      { nick: "ゆうか", name: "森口 優花", kana: "もりぐち ゆうか", gender: "girls", birthday: "2009.06.27", grade: "16歳 高校2年", height: "155cm", prefecture: "大阪", sns: ["Instagram: 06yuuka27", "X: 06yuukasan27", "TikTok: yuuka._0627"] },
+      { nick: "ねね", name: "日向 袮音", kana: "ひなた ねね", gender: "girls", birthday: "2010.01.13", grade: "16歳 高校2年", height: "未公開", prefecture: "滋賀", sns: ["Instagram: nene_hnt13", "X: nene_hnt13", "TikTok: nene_sub0"] },
+      { nick: "じゅな", name: "朝倉 樹菜", kana: "あさくら じゅな", gender: "girls", birthday: "2009.06.14", grade: "16歳 高校2年", height: "155cm", prefecture: "茨城", sns: ["Instagram: junachan_17", "X: junachan_17", "TikTok: 17.juna"] },
+      { nick: "いろは", name: "椎名 彩晴", kana: "しいな いろは", gender: "girls", birthday: "2010.01.21", grade: "16歳 高校2年", height: "153cm", prefecture: "埼玉", sns: ["Instagram: iir0.hq", "X: iiro_hq", "TikTok: iiir0.hq"] },
+      { nick: "ゆきな", name: "山本 雪菜", kana: "やまもと ゆきな", gender: "girls", birthday: "2008.12.05", grade: "17歳 高校3年", height: "154cm", prefecture: "大阪", sns: ["Instagram: yukina_vaz", "X: yukina_vaz", "TikTok: yukina_vaz"] }
+      ],
+      "newzealand": [
+      { nick: "さわ", name: "紗和", kana: "さわ", gender: "girls", birthday: "2009.02.28", grade: "高校2年", height: "152cm", prefecture: "埼玉", sns: ["Instagram: 28_sawa", "X: 28_sawa_", "TikTok: 28_sawa"] },
+      { nick: "はるあ", name: "武田 晴安", kana: "たけだ はるあ", gender: "girls", birthday: "未公開", grade: "高校3年", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "ひなた", name: "田中 陽菜", kana: "たなか ひなた", gender: "girls", birthday: "2008.05.25", grade: "高校2年", height: "153cm", prefecture: "静岡", sns: ["Instagram: hinat.a0525", "X: qk_ctr", "TikTok: hi_na106"] },
+      { nick: "みづき", name: "秋山 みづき", kana: "あきやま みづき", gender: "girls", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "もか", name: "代田 萌花", kana: "しろた もか", gender: "girls", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "おうが", name: "桜我", kana: "おうが", gender: "boys", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "せり", name: "松井 芹", kana: "まつい せり", gender: "boys", birthday: "2009.02.13", grade: "高校1年", height: "175cm", prefecture: "福岡", sns: ["Instagram: matsui_seri", "X: seri__matsui", "TikTok: seri___matsui"] },
+      { nick: "とうい", name: "木村 斗一", kana: "きむら とうい", gender: "boys", birthday: "2009.08.10", grade: "高校1年", height: "175cm", prefecture: "東京", sns: ["Instagram: toy_toy0810", "TikTok: toy0810"] },
+      { nick: "ゆうや", name: "大鶴 悠也", kana: "おおつる ゆうや", gender: "boys", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "りくと", name: "仲 陸翔", kana: "なか りくと", gender: "boys", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] }
+      ],
+      "mactan": [
+      { nick: "さら", name: "永瀬 さら", kana: "ながせ さら", gender: "girls", birthday: "2007.08.24", grade: "高校3年", height: "163cm", prefecture: "神奈川", sns: ["Instagram: sara_nagase_", "X: sara_nagase_", "TikTok: sara_nagase_"] },
+      { nick: "ねね", name: "時田 音々", kana: "ときた ねね", gender: "girls", birthday: "2008.11.16", grade: "高校2年", height: "152cm", prefecture: "千葉", sns: ["Instagram: tokita_nene", "X: nene_tokita", "TikTok: nene_tokita"] },
+      { nick: "ひな", name: "長浜 広奈", kana: "ながはま ひな", gender: "girls", birthday: "2008.06.19", grade: "高校2年", height: "160cm", prefecture: "東京", sns: ["Instagram: hinak.o0619", "TikTok: hinako0619"] },
+      { nick: "もか", name: "代田 萌花", kana: "しろた もか", gender: "girls", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "りのん", name: "相塲 星音", kana: "あいば りのん", gender: "girls", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "かなと", name: "河村 叶翔", kana: "かわむら かなと", gender: "boys", birthday: "2007.09.20", grade: "高校3年", height: "180cm", prefecture: "埼玉", sns: ["Instagram: kanato4926"] },
+      { nick: "けんめい", name: "鳥栖 賢明", kana: "とす けんめい", gender: "boys", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "しゅん", name: "吉川 竣", kana: "よしかわ しゅん", gender: "boys", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "そうし", name: "増本 蒼士", kana: "ますもと そうし", gender: "boys", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "はると", name: "今井 暖大", kana: "いまい はると", gender: "boys", birthday: "2008.05.09", grade: "高校2年", height: "172cm", prefecture: "東京", sns: ["Instagram: harutosroom", "TikTok: はるとはるお"] }
+      ],
+      "halong": [
+      { nick: "りょうすけ", name: "曽根 凌輔", kana: "そね りょうすけ", gender: "boys", birthday: "2007.08.29", grade: "高校3年", height: "176cm", prefecture: "神奈川", sns: ["Instagram: ryou_ske0829", "TikTok: ryousuke_0829"] },
+      { nick: "もんた", name: "もんた", kana: "もんた", gender: "boys", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "おうが", name: "桜我", kana: "おうが", gender: "boys", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "おとは", name: "倉八 音羽", kana: "くらはち おとは", gender: "girls", birthday: "2007.07.27", grade: "高校3年", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "ひな", name: "長浜 広奈", kana: "ながはま ひな", gender: "girls", birthday: "2008.06.19", grade: "高校2年", height: "160cm", prefecture: "東京", sns: ["Instagram: hinak.o0619", "TikTok: hinako0619"] },
+      { nick: "めい", name: "めい", kana: "めい", gender: "girls", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "ひなの", name: "瀬川 陽菜乃", kana: "せがわ ひなの", gender: "girls", birthday: "2008.02.06", grade: "高校3年", height: "162cm", prefecture: "福岡", photo: "images.jpg", sns: ["Instagram: ponpon___2008", "X: ponpon___2008", "TikTok: ponpon_20080"] },
+      { nick: "めいあ", name: "めいあ", kana: "めいあ", gender: "girls", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "男子メンバー", name: "ハロン編 男子メンバー", kana: "はろんへん だんしめんばー", gender: "boys", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "女子メンバー", name: "ハロン編 女子メンバー", kana: "はろんへん じょしめんばー", gender: "girls", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] }
+      ],
+      "natsuyasumi-2025": [
+      { nick: "るい", name: "倉田 琉偉", kana: "くらた るい", gender: "boys", birthday: "2008.03.24", grade: "17歳 高校3年", height: "174cm", prefecture: "長野", sns: ["Instagram: rui_kurata_324", "TikTok: ruimarl_1x"] },
+      { nick: "しゅん", name: "倉澤 俊", kana: "くらさわ しゅん", gender: "boys", birthday: "2008.04.22", grade: "17歳 高校2年", height: "172cm", prefecture: "東京", sns: ["Instagram: shun._.kurasawa", "TikTok: shun_kurasawa"] },
+      { nick: "せり", name: "松井 芹", kana: "まつい せり", gender: "boys", birthday: "2009.02.13", grade: "16歳 高校2年", height: "175cm", prefecture: "福岡", sns: ["Instagram: matsui_seri", "X: seri__matsui", "TikTok: seri___matsui"] },
+      { nick: "きんご", name: "内田 金吾", kana: "うちだ きんご", gender: "boys", birthday: "2008.08.20", grade: "16歳 高校2年", height: "173cm", prefecture: "福岡", sns: ["Instagram: kingo0820", "X: kingoo0820", "TikTok: kingo0820"] },
+      { nick: "いおう", name: "榎田 一王", kana: "えのきだ いおう", gender: "boys", birthday: "2007.11.25", grade: "17歳 高校3年", height: "185cm", prefecture: "宮崎", sns: ["Instagram: iou025", "X: iou025", "TikTok: iou025"] },
+      { nick: "しおん", name: "安藤 志音", kana: "あんどう しおん", gender: "boys", birthday: "2008.01.08", grade: "17歳 高校3年", height: "177cm", prefecture: "沖縄", sns: ["Instagram: shion_andoooo", "X: DKshion_ando", "TikTok: shion_andoooo"] },
+      { nick: "ひなの", name: "瀬川 陽菜乃", kana: "せがわ ひなの", gender: "girls", birthday: "2008.02.06", grade: "17歳 高校3年", height: "162cm", prefecture: "福岡", photo: "images.jpg", sns: ["Instagram: ponpon___2008", "X: ponpon___2008", "TikTok: ponpon_20080"] },
+      { nick: "ねね", name: "時田 音々", kana: "ときた ねね", gender: "girls", birthday: "2008.11.16", grade: "16歳 高校2年", height: "152cm", prefecture: "千葉", sns: ["Instagram: tokita_nene", "X: nene_tokita", "TikTok: nene_tokita"] },
+      { nick: "りのん", name: "多田 梨音", kana: "ただ りのん", gender: "girls", birthday: "2008.06.07", grade: "17歳 高校2年", height: "160cm", prefecture: "大阪", sns: ["Instagram: nonnon_0607", "X: nonnon_rinon", "TikTok: rinon_0607"] },
+      { nick: "ひな", name: "長浜 広奈", kana: "ながはま ひな", gender: "girls", birthday: "2008.06.19", grade: "16歳 高校2年", height: "160cm", prefecture: "東京", sns: ["Instagram: hinak.o0619", "TikTok: hinako0619"] },
+      { nick: "ゆま", name: "谷村 優真", kana: "たにむら ゆま", gender: "girls", birthday: "2008.07.23", grade: "16歳 高校2年", height: "150cm", prefecture: "埼玉", sns: ["Instagram: yuma.yuma0720", "X: yumayuma0720", "TikTok: yuma.yuma0720"] },
+      { nick: "すみれ", name: "すみれ", kana: "すみれ", gender: "girls", birthday: "2009.04.29", grade: "16歳 高校2年", height: "未公開", prefecture: "大阪", sns: ["Instagram: iam_smire", "X: ioooobbb_", "TikTok: iam_sumire0"] }
+      ],
+      "sotsugyo-2025-seoul": [
+      { nick: "たくや", name: "林田 拓也", kana: "はやしだ たくや", gender: "boys", birthday: "2006.12.03", grade: "18歳 高校3年", height: "172cm", prefecture: "宮崎", sns: ["Instagram: takuya.120318", "TikTok: takuya_120318"] },
+      { nick: "ゆうすけ", name: "原屋 裕介", kana: "はらや ゆうすけ", gender: "boys", birthday: "2006.09.01", grade: "18歳 高校3年", height: "175cm", prefecture: "鹿児島", sns: ["Instagram: kaoume._.suu", "X: h_yusk9", "TikTok: motimotida4"] },
+      { nick: "せり", name: "松井 芹", kana: "まつい せり", gender: "boys", birthday: "2009.02.13", grade: "15歳 高校1年", height: "175cm", prefecture: "福岡", sns: ["Instagram: matsui_seri", "X: seri__matsui", "TikTok: seri___matsui"] },
+      { nick: "さとる", name: "永見 悟琉", kana: "ながみ さとる", gender: "boys", birthday: "2006.10.18", grade: "18歳 高校3年", height: "178cm", prefecture: "東京", sns: ["Instagram: satoru_nagami__official", "X: n_satoru1018", "TikTok: satoru_nagami_official"] },
+      { nick: "れお", name: "山崎 礼央", kana: "やまさき れお", gender: "boys", birthday: "2006.04.30", grade: "18歳 高校3年", height: "175cm", prefecture: "兵庫", sns: ["Instagram: luygyon", "TikTok: luygyon"] },
+      { nick: "ゆうき", name: "後藤 結", kana: "ごとう ゆうき", gender: "boys", birthday: "2008.02.15", grade: "16歳 高校2年", height: "180cm", prefecture: "神奈川", sns: ["Instagram: yuki_1224510", "X: yukigoto1224510", "TikTok: yuki_1224510"] },
+      { nick: "はるな", name: "村谷 はるな", kana: "むらたに はるな", gender: "girls", birthday: "2006.05.07", grade: "18歳 高校3年", height: "167cm", prefecture: "山口", sns: ["Instagram: _haruchi.05", "X: haru_jk07", "TikTok: llun_377"] },
+      { nick: "じゅり", name: "榊原 樹里", kana: "さかきばら じゅり", gender: "girls", birthday: "2007.02.12", grade: "17歳 高校3年", height: "162cm", prefecture: "愛知", sns: ["Instagram: juri_._0212", "X: JURI02563818", "TikTok: juri_._0212"] },
+      { nick: "ひなの", name: "瀬川 陽菜乃", kana: "せがわ ひなの", gender: "girls", birthday: "2008.02.06", grade: "16歳 高校2年", height: "162cm", prefecture: "福岡", photo: "images.jpg", sns: ["Instagram: ponpon___2008", "X: ponpon___2008", "TikTok: ponpon_20080"] },
+      { nick: "のあ", name: "希空", kana: "のあ", gender: "girls", birthday: "2007.11.26", grade: "17歳 高校2年", height: "168cm", prefecture: "東京", sns: ["Instagram: noa._.1126_", "Instagram: n_07_a.s", "TikTok: noa.s1126"] },
+      { nick: "ひなた", name: "田中 陽菜", kana: "たなか ひなた", gender: "girls", birthday: "2008.05.25", grade: "16歳 高校1年", height: "153cm", prefecture: "東京", sns: ["Instagram: hinat.a0525", "X: qk_ctr", "TikTok: hi_na106"] }
+      ],
+      "sotsugyo-2025-singapore": [
+      { nick: "ゆうすけ", name: "原屋 裕介", kana: "はらや ゆうすけ", gender: "boys", birthday: "2006.09.01", grade: "18歳 高校3年", height: "175cm", prefecture: "鹿児島", sns: ["Instagram: kaoume._.suu", "X: h_yusk9", "TikTok: motimotida4"] },
+      { nick: "れお", name: "山崎 礼央", kana: "やまさき れお", gender: "boys", birthday: "2006.04.30", grade: "18歳 高校3年", height: "175cm", prefecture: "兵庫", sns: ["Instagram: luygyon", "TikTok: luygyon"] },
+      { nick: "そうま", name: "阿部 創馬", kana: "あべ そうま", gender: "boys", birthday: "2006.08.14", grade: "18歳 高校3年", height: "170cm", prefecture: "東京", sns: ["Instagram: soma_abee", "X: soma_abee", "TikTok: soma_abee"] },
+      { nick: "いっさ", name: "松本 一彩", kana: "まつもと いっさ", gender: "boys", birthday: "2006.08.16", grade: "18歳 高校3年", height: "176cm", prefecture: "奈良", sns: ["Instagram: issa_.24081", "X: issa_24081", "TikTok: issa_.240816"] },
+      { nick: "らいと", name: "奥村 頼斗", kana: "おくむら らいと", gender: "boys", birthday: "2006.08.13", grade: "18歳 高校3年", height: "173cm", prefecture: "京都", sns: ["Instagram: okumura_raito", "X: OkumuraRaito", "TikTok: okumuraraito"] },
+      { nick: "じゅま", name: "坂本 ジェルー 寿真", kana: "さかもと じぇるー じゅま", gender: "boys", birthday: "2006.09.29", grade: "18歳 高校3年", height: "179cm", prefecture: "埼玉", sns: ["Instagram: juma__jerau", "X: juma__jerau", "TikTok: juma_jeraujam"] },
+      { nick: "じゅり", name: "榊原 樹里", kana: "さかきばら じゅり", gender: "girls", birthday: "2007.02.12", grade: "17歳 高校3年", height: "162cm", prefecture: "愛知", sns: ["Instagram: juri_._0212", "X: JURI02563818", "TikTok: juri_._0212"] },
+      { nick: "その", name: "平松 想乃", kana: "ひらまつ その", gender: "girls", birthday: "2006.11.13", grade: "18歳 高校3年", height: "158cm", prefecture: "岡山", sns: ["Instagram: sono7na", "X: sono7na", "TikTok: sono7na"] },
+      { nick: "メガン", name: "夏川 メガン", kana: "なつかわ めがん", gender: "girls", birthday: "2008.08.22", grade: "18歳 高校3年", height: "164cm", prefecture: "大阪", sns: ["Instagram: _megann.282", "X: _megann282", "TikTok: megannnn_282"] },
+      { nick: "あすか", name: "清水 あす香", kana: "しみず あすか", gender: "girls", birthday: "2006.05.10", grade: "18歳 高校3年", height: "170cm", prefecture: "宮崎", sns: ["Instagram: asu_asu_51000", "X: asu_asu_510", "TikTok: asu_asu_510"] },
+      { nick: "あやな", name: "大澤 綾菜", kana: "おおさわ あやな", gender: "girls", birthday: "2007.03.22", grade: "17歳 高校3年", height: "159cm", prefecture: "岐阜", sns: ["Instagram: lix3ay", "X: ayana_osawa", "TikTok: uxxu60"] }
+      ],
+      "chuncheon": [
+      { nick: "いおう", name: "榎田 一王", kana: "えのきだ いおう", gender: "boys", birthday: "2007.11.25", grade: "17歳 高校3年", height: "185cm", prefecture: "宮崎", sns: ["Instagram: iou025", "X: iou025", "TikTok: iou025"] },
+      { nick: "りくと", name: "森本 陸斗", kana: "もりもと りくと", gender: "boys", birthday: "2009.05.10", grade: "17歳 高校3年", height: "171cm", prefecture: "埼玉", sns: ["Instagram: morimoto_rikuto", "TikTok: morimoto_rikuto"] },
+      { nick: "かける", name: "鈴木 駈", kana: "すずき かける", gender: "boys", birthday: "2008.07.11", grade: "17歳 高校3年", height: "175cm", prefecture: "神奈川", sns: ["Instagram: kakeru_suzuki_official", "X: kakerusuzuki711", "TikTok: kakeru_0711"] },
+      { nick: "こうし", name: "倉上 昊志", kana: "くらかみ こうし", gender: "boys", birthday: "2007.05.14", grade: "18歳 高校3年", height: "180cm", prefecture: "新潟", sns: ["Instagram: ko04_514", "X: ko04_514", "TikTok: ko04_514"] },
+      { nick: "はる", name: "谷本 晴", kana: "たにもと はる", gender: "boys", birthday: "2008.01.21", grade: "17歳 高校3年", height: "175cm", prefecture: "神奈川", sns: ["Instagram: halgym.ex", "X: haru_gymdayo", "TikTok: hall.gymnastics"] },
+      { nick: "ゼブン", name: "矢田 ゼブン", kana: "やだ ぜぶん", gender: "boys", birthday: "2007.08.06", grade: "16歳 高校2年", height: "178cm", prefecture: "石川", sns: ["Instagram: nyank.o12", "X: Catty_Evan", "TikTok: catty_evan"] },
+      { nick: "さわ", name: "紗和", kana: "さわ", gender: "girls", birthday: "2009.02.28", grade: "16歳 高校2年", height: "152cm", prefecture: "埼玉", sns: ["Instagram: 28_sawa", "X: 28_sawa_", "TikTok: 28_sawa"] },
+      { nick: "さら", name: "永瀬 さら", kana: "ながせ さら", gender: "girls", birthday: "2007.08.24", grade: "16歳 高校3年", height: "163cm", prefecture: "神奈川", sns: ["Instagram: sara_nagase_", "X: sara_nagase_", "TikTok: sara_nagase_"] },
+      { nick: "あやか", name: "伊藤 彩華", kana: "いとう あやか", gender: "girls", birthday: "2009.01.22", grade: "16歳 高校2年", height: "161cm", prefecture: "神奈川", sns: ["Instagram: ayakaaaa_122", "X: a__kachan", "TikTok: ayakaaaa_122"] },
+      { nick: "ゆうひ", name: "岩間 夕陽", kana: "いわま ゆうひ", gender: "girls", birthday: "2010.02.06", grade: "17歳 高校2年", height: "155cm", prefecture: "千葉", sns: ["Instagram: yuuh10206", "X: 0206yu_h1", "TikTok: yuhi_0206"] },
+      { nick: "あやな", name: "葛西 杏也菜", kana: "かさい あやな", gender: "girls", birthday: "2007.04.28", grade: "16歳 高校2年", height: "165cm", prefecture: "東京", sns: ["Instagram: ayana_kasai_official", "TikTok: ayana.__.07"] },
+      { nick: "ゆうか", name: "森口 優花", kana: "もりぐち ゆうか", gender: "girls", birthday: "2009.06.27", grade: "16歳 高校1年", height: "155cm", prefecture: "大阪", sns: ["Instagram: 06yuuka27", "X: 06yuukasan27", "TikTok: yuuka._0627"] }
+      ],
+      "chiangmai": [
+      { nick: "とうい", name: "木村 斗一", kana: "きむら とうい", gender: "boys", birthday: "2009.08.10", grade: "15歳 高校1年", height: "175cm", prefecture: "東京", sns: ["Instagram: toy_toy0810", "TikTok: toy0810"] },
+      { nick: "りくと", name: "森本 陸斗", kana: "もりもと りくと", gender: "boys", birthday: "2009.05.10", grade: "17歳 高校3年", height: "172cm", prefecture: "埼玉", sns: ["Instagram: morimoto_rikuto", "TikTok: morimoto_rikuto"] },
+      { nick: "しゅん", name: "倉澤 俊", kana: "くらさわ しゅん", gender: "boys", birthday: "2008.04.22", grade: "17歳 高校2年", height: "172cm", prefecture: "東京", sns: ["Instagram: shun._.kurasawa", "TikTok: shun_kurasawa"] },
+      { nick: "かなた", name: "陣野 奏汰", kana: "じんの かなた", gender: "boys", birthday: "2007.06.06", grade: "18歳 高校3年", height: "173cm", prefecture: "神奈川", sns: ["Instagram: kanata_jinno", "X: jinnokanata66", "TikTok: kanata_jinno66"] },
+      { nick: "しゅんぺい", name: "岩本 舜平", kana: "いわもと しゅんぺい", gender: "boys", birthday: "2007.11.15", grade: "18歳 高校3年", height: "169cm", prefecture: "神奈川", sns: ["Instagram: shun.0715_", "X: shum11157", "TikTok: shum_1115"] },
+      { nick: "ゆま", name: "谷村 優真", kana: "たにむら ゆま", gender: "girls", birthday: "2008.07.23", grade: "16歳 高校2年", height: "150cm", prefecture: "埼玉", sns: ["Instagram: yuma.yuma0720", "X: yumayuma0720", "TikTok: yuma.yuma0720"] },
+      { nick: "すみれ", name: "すみれ", kana: "すみれ", gender: "girls", birthday: "2009.04.29", grade: "16歳 高校2年", height: "158cm", prefecture: "大阪", sns: ["Instagram: iam_smire", "X: ioooobbb_", "TikTok: iam_sumire0"] },
+      { nick: "りりか", name: "島津 凛々華", kana: "しまづ りりか", gender: "girls", birthday: "2008.02.21", grade: "17歳 高校3年", height: "154cm", prefecture: "福井", sns: ["Instagram: r_lxak", "X: ririka0130221", "TikTok: r_lxak"] },
+      { nick: "たまき", name: "今井 環希", kana: "いまい たまき", gender: "girls", birthday: "2009.05.10", grade: "16歳 高校1年", height: "154cm", prefecture: "大分", sns: ["Instagram: tamaki_.imai", "X: tamaki_imai", "TikTok: tamaki_.imai"] },
+      { nick: "ここね", name: "大森 心音", kana: "おおもり ここね", gender: "girls", birthday: "2010.03.26", grade: "15歳 高校1年", height: "160cm", prefecture: "大阪", sns: ["Instagram: kokon.e0326", "TikTok: kokon.e0326"] }
+      ]
+    };
 
+    const seasonVisuals = {
+      "sotsugyo-2026": {
+        src: "https://image.p-c2-x.abema-tv.com/lp/assets/cb6f77e60ab04510bca50936e9549c94/00-0000_kyousuki_sotsugyo26_Yoko.png",
+        alt: "卒業編2026のキービジュアル",
+        caption: "卒業編2026 キービジュアル"
+      },
+      "christchurch": {
+        src: "https://www.abemapro.co.jp/wp-content/uploads/2026/04/00-0000_kyousuki_Christchurch_Yoko-1.png",
+        alt: "クライストチャーチ編のキービジュアル",
+        caption: "クライストチャーチ編 キービジュアル"
+      },
+      "rayong": {
+        src: "https://image.p-c2-x.abema-tv.com/lp/assets/bb284de57acc4f08a20b5f1d7f727ccf/00-0000_kyousuki_rayong_Yoko_none.png",
+        alt: "ラヨーン編のキービジュアル",
+        caption: "ラヨーン編 キービジュアル"
+      }
+    };
+
+    const photoBySeasonNick = {
+      "sotsugyo-2026": {
+        "はると": "https://image.p-c2-x.abema-tv.com/lp/assets/56eed694b9a54f0aa79ca45fd6e47890/X-0217-2000-2.jpg",
+        "いおう": "https://image.p-c2-x.abema-tv.com/lp/assets/48af0dcfb6b44c1199c417401683409a/260209_X_kyousuki_sotsugyo2026_profile02_iou.jpg",
+        "はる": "https://image.p-c2-x.abema-tv.com/lp/assets/6d27710f0cb342929af853846c7e5b22/X-0212-1803-3.jpg",
+        "りょうすけ": "https://image.p-c2-x.abema-tv.com/lp/assets/c62ff73b45194a0ca0405f44c6af6d29/260209_X_kyousuki_sotsugyo2026_profile02_ryosuke.jpg",
+        "けいすけ": "https://image.p-c2-x.abema-tv.com/lp/assets/8fd034a7b47b4ca1b7e65aac26535073/X-0212-1803-4.jpg",
+        "とき": "https://image.p-c2-x.abema-tv.com/lp/assets/49aab668774142e99cdf816abe22beae/260209_X_kyousuki_sotsugyo2026_profile02_toki.jpg",
+        "りあ": "https://image.p-c2-x.abema-tv.com/lp/assets/5638a84a1b174cf8bcfdc7e9bc2b331d/260210_X_kyousuki_sotsugyo2026_profile02_ria.jpg",
+        "ひなの": "https://image.p-c2-x.abema-tv.com/lp/assets/1f2fd9be7d3b48bfba57f13546ab06a7/X-0212-1802-1.jpg",
+        "あやな": "https://image.p-c2-x.abema-tv.com/lp/assets/906929a56c42417d9eb50c11aa45f12a/260209_X_kyousuki_sotsugyo2026_profile02_ayana.jpg",
+        "さわ": "https://image.p-c2-x.abema-tv.com/lp/assets/48837925a90b4bbcb4c707f5f7b156da/260209_X_kyousuki_sotsugyo2026_profile02_sawa.jpg",
+        "ねね": "https://image.p-c2-x.abema-tv.com/lp/assets/96386a0173cf4773bdc84f263a3ff015/X-0212-1802-2.jpg",
+        "おとは": "https://image.p-c2-x.abema-tv.com/lp/assets/f33923f0c07d4c138f7cbc4c72c0412f/260209_X_kyousuki_sotsugyo2026_profile02_otoha.jpg",
+        "ゆあ": "https://image.p-c2-x.abema-tv.com/lp/assets/9ab205dbfda5436a837c1a8a9d40a306/X-0212-1802-6.jpg"
+      },
+      "rayong": {
+        "りお": "https://image.p-c2-x.abema-tv.com/lp/assets/7af8c7a7416a4329a3e3a86b91492757/2_rio_1.png",
+        "すばる": "https://image.p-c2-x.abema-tv.com/lp/assets/cb477693c25e4f9a84b77438f23d01a6/9_subaru_1.png",
+        "れん": "https://image.p-c2-x.abema-tv.com/lp/assets/92357f8b234c4bb59ee0aba6ce7268b6/5_ren_2.png",
+        "そら": "https://image.p-c2-x.abema-tv.com/lp/assets/8e2e9475746f4089a177875973515b37/3_sora_1.png",
+        "こうのすけ": "https://image.p-c2-x.abema-tv.com/lp/assets/a9b75c9ef4a8445b959d3e38dc637d89/7_konosuke_1.png",
+        "ゆうか": "https://image.p-c2-x.abema-tv.com/lp/assets/e9631ed0651644ecafcb0b4667178c3e/1_yuka_1.png",
+        "ねね": "https://image.p-c2-x.abema-tv.com/lp/assets/c3244b1475254840bb569d23cc4d5c6a/4_nene_1.png",
+        "じゅな": "https://image.p-c2-x.abema-tv.com/lp/assets/7e59ae3ac7ba4cf79ff1190c18046ec6/8_juna_1.png",
+        "いろは": "https://image.p-c2-x.abema-tv.com/lp/assets/348a462ad2cc4c5e975f6fb2ed2fbbf4/10_iroha_1.png",
+        "ゆきな": "https://image.p-c2-x.abema-tv.com/lp/assets/3d4fd9d5ea6f4a5dba321a7b89c4342a/6_yukina_1.png"
+      }
+    };
+
+    let selectedYear = 2026;
+    let selectedSeason = "sotsugyo-2026";
+    const yearButtonsRoot = document.querySelector("#yearButtons");
+    const yearSummary = document.querySelector("#yearSummary");
+    const seasonButtonsRoot = document.querySelector("#seasonButtons");
+    const seasonSummary = document.querySelector("#seasonSummary");
+    const seasonVisual = document.querySelector("#seasonVisual");
+    const seasonVisualImage = document.querySelector("#seasonVisualImage");
+    const seasonVisualCaption = document.querySelector("#seasonVisualCaption");
     const membersRoot = document.querySelector("#members");
     const searchInput = document.querySelector("#search");
     const genderInput = document.querySelector("#gender");
@@ -357,14 +691,15 @@
 
     function createCard(member) {
       const article = document.createElement("article");
+      const memberPhoto = photoBySeasonNick[selectedSeason]?.[member.nick] || member.photo;
       article.className = "card";
       article.dataset.gender = member.gender;
       article.dataset.prefecture = member.prefecture;
       article.dataset.search = `${member.nick} ${member.name} ${member.kana} ${member.prefecture} ${member.sns.join(" ")}`.toLowerCase();
 
       article.innerHTML = `
-        <div class="portrait${member.photo ? " has-photo" : ""}">
-          ${member.photo ? `<img src="${member.photo}" alt="${member.name}の写真">` : ""}
+        <div class="portrait${memberPhoto ? " has-photo" : ""}">
+          ${memberPhoto ? `<img src="${memberPhoto}" alt="${member.name}の写真">` : ""}
           <h2 class="nickname">${member.nick}</h2>
           <span class="gender">${member.gender === "boys" ? "男子" : "女子"}</span>
         </div>
@@ -383,10 +718,70 @@
       return article;
     }
 
+    function renderYearButtons() {
+      yearButtonsRoot.innerHTML = "";
+      years.forEach((item) => {
+        const button = document.createElement("button");
+        const hasData = (seasons[item.year] || []).some((season) => Boolean(memberData[season.id]));
+        button.type = "button";
+        button.className = `year-button${item.year === selectedYear ? " active" : ""}`;
+        button.textContent = item.label;
+        button.title = hasData ? `${item.label}のメンバーを見る` : `${item.label}は追加予定です`;
+        button.addEventListener("click", () => {
+          selectedYear = item.year;
+          selectedSeason = seasons[selectedYear][0].id;
+          render();
+        });
+        yearButtonsRoot.appendChild(button);
+      });
+    }
+
+    function renderSeasonButtons() {
+      const currentSeasons = seasons[selectedYear] || [];
+      seasonButtonsRoot.innerHTML = "";
+      currentSeasons.forEach((item) => {
+        const button = document.createElement("button");
+        const hasData = Boolean(memberData[item.id]);
+        button.type = "button";
+        button.className = `season-button${item.id === selectedSeason ? " active" : ""}`;
+        button.textContent = item.label;
+        button.title = hasData ? `${item.label}のメンバーを見る` : `${item.label}はプロフィール追加予定です`;
+        button.addEventListener("click", () => {
+          selectedSeason = item.id;
+          render();
+        });
+        seasonButtonsRoot.appendChild(button);
+      });
+    }
+
     function render() {
+      const currentSeasons = seasons[selectedYear] || [];
+      const year = years.find((item) => item.year === selectedYear);
+      const season = currentSeasons.find((item) => item.id === selectedSeason) || currentSeasons[0];
+      const members = memberData[selectedSeason] || [];
       membersRoot.innerHTML = "";
+      yearSummary.textContent = `${year.label}: ${year.description}`;
+      seasonSummary.textContent = `${season.label}: ${season.description}`;
+      renderSeasonVisual();
+      renderYearButtons();
+      renderSeasonButtons();
+      if (members.length === 0) {
+        membersRoot.innerHTML = '<p class="note">この編のプロフィールはまだ追加されていません。</p>';
+        return;
+      }
       members.forEach((member) => membersRoot.appendChild(createCard(member)));
       filterCards();
+    }
+
+    function renderSeasonVisual() {
+      const visual = seasonVisuals[selectedSeason];
+      seasonVisual.classList.toggle("hidden", !visual);
+      if (!visual) {
+        return;
+      }
+      seasonVisualImage.src = visual.src;
+      seasonVisualImage.alt = visual.alt;
+      seasonVisualCaption.textContent = visual.caption;
     }
 
     function filterCards() {
@@ -407,6 +802,6 @@
     });
 
     render();
-  </script>
+</script>
 </body>
 </html>
