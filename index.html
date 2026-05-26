@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自己紹介</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f1ea;
+      --surface: #ffffff;
+      --text: #222222;
+      --muted: #666666;
+      --accent: #1f7a8c;
+      --line: #ddd7ce;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+    }
+
+    main {
+      width: min(920px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0;
+    }
+
+    .profile {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 32px;
+      align-items: center;
+      padding: 36px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 18px 50px rgba(44, 38, 30, 0.08);
+    }
+
+    .avatar {
+      width: 180px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 64px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 6vw, 56px);
+      line-height: 1.15;
+    }
+
+    .role {
+      margin: 10px 0 0;
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .intro {
+      margin: 24px 0 0;
+      color: var(--muted);
+    }
+
+    section {
+      margin-top: 28px;
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 8px 14px;
+      color: #ffffff;
+      background: var(--accent);
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .links a:hover {
+      background: #155e6c;
+    }
+
+    footer {
+      margin-top: 24px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 680px) {
+      main {
+        padding: 24px 0;
+      }
+
+      .profile {
+        grid-template-columns: 1fr;
+        padding: 28px;
+      }
+
+      .avatar {
+        width: 132px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <article class="profile">
+      <div class="avatar" aria-label="プロフィール画像の代替表示">名</div>
+      <div>
+        <h1>山田 太郎</h1>
+        <p class="role">Web制作とデザインが好きな学生</p>
+        <p class="intro">
+          こんにちは。新しい技術を学びながら、見やすく使いやすいWebページを作っています。
+          このページでは、私の好きなことやできることを簡単に紹介します。
+        </p>
+        <div class="links" aria-label="連絡先リンク">
+          <a href="mailto:your-email@example.com">メール</a>
+          <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+      </div>
+    </article>
+
+    <section>
+      <h2>好きなこと</h2>
+      <ul>
+        <li>Webサイトのデザインを考えること</li>
+        <li>HTML、CSS、JavaScriptを使った制作</li>
+        <li>音楽を聴きながら作業すること</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>できること</h2>
+      <ul>
+        <li>シンプルな自己紹介ページの作成</li>
+        <li>スマートフォンでも見やすいレイアウト調整</li>
+        <li>基本的なHTMLとCSSの編集</li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>&copy; 2026 Taro Yamada</p>
+    </footer>
+  </main>
+</body>
+</html>
