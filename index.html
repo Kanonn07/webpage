@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>kyousuki.profile</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e84d75'/%3E%3Cpath d='M32 50S13 38 13 24.5C13 17.6 18.3 13 24.2 13c3.6 0 6.1 1.7 7.8 4.1C33.7 14.7 36.2 13 39.8 13 45.7 13 51 17.6 51 24.5 51 38 32 50 32 50Z' fill='white'/%3E%3Ctext x='32' y='36' text-anchor='middle' font-size='21' font-family='sans-serif' font-weight='700' fill='%23e84d75'%3E好%3C/text%3E%3C/svg%3E">
   <style>
     :root {
       --bg: #fff7f6;
@@ -63,6 +64,14 @@
       font-weight: 700;
     }
 
+    .hero-logo {
+      display: block;
+      width: min(300px, 72vw);
+      height: auto;
+      margin: 0 0 20px;
+      filter: drop-shadow(0 14px 26px rgba(36, 28, 31, 0.28));
+    }
+
     h1 {
       max-width: 780px;
       margin: 0;
@@ -108,7 +117,7 @@
 
     .toolbar {
       display: grid;
-      grid-template-columns: minmax(220px, 1fr) auto auto;
+      grid-template-columns: minmax(220px, 1fr) auto auto auto;
       gap: 12px;
       align-items: center;
       margin-bottom: 22px;
@@ -200,7 +209,8 @@
     }
 
     input,
-    select {
+    select,
+    button {
       width: 100%;
       min-height: 44px;
       border: 1px solid var(--line);
@@ -209,6 +219,34 @@
       color: var(--text);
       background: #ffffff;
       font: inherit;
+    }
+
+    .clear-button {
+      min-width: 126px;
+      color: var(--pink);
+      background: #fff7f6;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .result-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .empty-state {
+      margin: 10px 0 0;
+      padding: 22px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.68);
+      text-align: center;
     }
 
     .grid {
@@ -362,21 +400,26 @@
       .meta {
         grid-template-columns: 1fr;
       }
+
+      .result-bar {
+        display: block;
+      }
     }
   </style>
 </head>
 <body>
   <header class="hero">
     <div class="hero-inner">
-      <p class="eyebrow">今日、好きになりました。卒業編2026</p>
-      <h1>メンバーのプロフィールをまとめてチェック</h1>
+      <img class="hero-logo" id="heroLogo" src="" alt="今日、好きになりました。">
+      <p class="eyebrow" id="heroEyebrow">今日、好きになりました。卒業編2026</p>
+      <h1 id="heroTitle">メンバーのプロフィールをまとめてチェック</h1>
       <p class="lead">
         名前、出身地、身長、SNSをカード形式で整理。気になるメンバーを検索や絞り込みですぐ探せます。
       </p>
       <div class="hero-stats" aria-label="掲載情報">
-        <div class="stat"><strong>13</strong><span>掲載メンバー</span></div>
-        <div class="stat"><strong>6</strong><span>高校2年生</span></div>
-        <div class="stat"><strong>7</strong><span>高校3年生</span></div>
+        <div class="stat"><strong id="totalCount">13</strong><span>掲載メンバー</span></div>
+        <div class="stat"><strong id="boysCount">6</strong><span>男子メンバー</span></div>
+        <div class="stat"><strong id="girlsCount">7</strong><span>女子メンバー</span></div>
       </div>
     </div>
   </header>
@@ -403,41 +446,20 @@
       </select>
       <select id="prefecture">
         <option value="">すべての出身地</option>
-        <option>東京</option>
-        <option>神奈川</option>
-        <option>宮崎</option>
-        <option>長野</option>
-        <option>広島</option>
-        <option>北海道</option>
-        <option>福岡</option>
-        <option>埼玉</option>
-        <option>千葉</option>
-        <option>大阪</option>
-        <option>京都</option>
-        <option>福島</option>
-        <option>茨城</option>
-        <option>滋賀</option>
-        <option>鹿児島</option>
-        <option>兵庫</option>
-        <option>山口</option>
-        <option>愛知</option>
-        <option>奈良</option>
-        <option>岡山</option>
-        <option>岐阜</option>
-        <option>沖縄</option>
-        <option>静岡</option>
-        <option>新潟</option>
-        <option>石川</option>
-        <option>福井</option>
-        <option>大分</option>
       </select>
+      <button class="clear-button" id="clearFilters" type="button">絞り込み解除</button>
     </form>
 
     <figure class="season-visual hidden" id="seasonVisual">
       <img id="seasonVisualImage" src="" alt="">
       <figcaption id="seasonVisualCaption"></figcaption>
     </figure>
+    <div class="result-bar" aria-live="polite">
+      <span id="resultCount">13件を表示中</span>
+      <span id="filterSummary">全員・すべての出身地</span>
+    </div>
     <section class="grid" id="members" aria-label="メンバー一覧"></section>
+    <p class="empty-state hidden" id="emptyState">条件に合うメンバーが見つかりません。</p>
     <p class="note">
       プロフィール情報はABEMA公式のメンバー紹介を参考にしています。写真は追加したメンバーだけ表示しています。
     </p>
@@ -447,14 +469,14 @@
     const years = [
       { year: 2026, label: "2026年", description: "2026年の編を選択できます。" },
       { year: 2025, label: "2025年", description: "ハロン編など、2025年の編を選択できます。" },
-      { year: 2024, label: "2024年", description: "2024年の弾を追加予定です。" },
-      { year: 2023, label: "2023年", description: "2023年の弾を追加予定です。" },
-      { year: 2022, label: "2022年", description: "2022年の弾を追加予定です。" },
-      { year: 2021, label: "2021年", description: "2021年の弾を追加予定です。" },
-      { year: 2020, label: "2020年", description: "2020年の弾を追加予定です。" },
-      { year: 2019, label: "2019年", description: "2019年の弾を追加予定です。" },
-      { year: 2018, label: "2018年", description: "2018年の弾を追加予定です。" },
-      { year: 2017, label: "2017年", description: "2017年の弾を追加予定です。" }
+      { year: 2024, label: "2024年", description: "卒業編2024から冬休み編2024まで選択できます。" },
+      { year: 2023, label: "2023年", description: "サムイ島編から九龍編まで選択できます。" },
+      { year: 2022, label: "2022年", description: "蜜柑編からダナン編まで選択できます。" },
+      { year: 2021, label: "2021年", description: "赤い糸編から花梨編まで選択できます。" },
+      { year: 2020, label: "2020年", description: "卒業編2020から星空編まで選択できます。" },
+      { year: 2019, label: "2019年", description: "ハワイ編から冬休み編まで選択できます。" },
+      { year: 2018, label: "2018年", description: "グアム編からリベンジ編まで選択できます。" },
+      { year: 2017, label: "2017年", description: "第1弾から第3弾まで選択できます。" }
     ];
 
     const seasons = {
@@ -473,14 +495,80 @@
         { id: "chuncheon", label: "チュンチョン編", description: "チュンチョン編のメンバーを掲載中です。" },
         { id: "chiangmai", label: "チェンマイ編", description: "チェンマイ編のメンバーを掲載中です。" }
       ],
-      2024: [{ id: "year-2024", label: "2024年の編", description: "編一覧を追加予定です。" }],
-      2023: [{ id: "year-2023", label: "2023年の編", description: "編一覧を追加予定です。" }],
-      2022: [{ id: "year-2022", label: "2022年の編", description: "編一覧を追加予定です。" }],
-      2021: [{ id: "year-2021", label: "2021年の編", description: "編一覧を追加予定です。" }],
-      2020: [{ id: "year-2020", label: "2020年の編", description: "編一覧を追加予定です。" }],
-      2019: [{ id: "year-2019", label: "2019年の編", description: "編一覧を追加予定です。" }],
-      2018: [{ id: "year-2018", label: "2018年の編", description: "編一覧を追加予定です。" }],
-      2017: [{ id: "year-2017", label: "2017年の編", description: "編一覧を追加予定です。" }]
+      2024: [
+        { id: "sotsugyo-2024-phuket", label: "卒業編2024 in プーケット", description: "卒業編2024 in プーケットのメンバーを掲載中です。" },
+        { id: "sotsugyo-2024-cebu", label: "卒業編2024 in セブ島", description: "卒業編2024 in セブ島のメンバーを掲載中です。" },
+        { id: "nhatrang", label: "ニャチャン編", description: "ニャチャン編のメンバーを掲載中です。" },
+        { id: "busan-2024", label: "プサン編", description: "プサン編のメンバーを掲載中です。" },
+        { id: "huahin-2024", label: "ホアヒン編", description: "ホアヒン編のメンバーを掲載中です。" },
+        { id: "natsuyasumi-2024", label: "夏休み編2024", description: "夏休み編2024のメンバーを掲載中です。" },
+        { id: "dongtan", label: "ドンタン編", description: "ドンタン編のメンバーを掲載中です。" },
+        { id: "gyeongju", label: "キョンジュ編", description: "キョンジュ編のメンバーを掲載中です。" },
+        { id: "fuyuyasumi-2024", label: "冬休み編2024", description: "冬休み編2024のメンバーを掲載中です。" }
+      ],
+      2023: [
+        { id: "samui", label: "サムイ島編", description: "サムイ島編のメンバーを掲載中です。" },
+        { id: "sotsugyo-2023", label: "卒業編2023", description: "卒業編2023のメンバーを掲載中です。" },
+        { id: "phuquoc", label: "フーコック島編", description: "フーコック島編のメンバーを掲載中です。" },
+        { id: "pattaya", label: "パタヤ編", description: "パタヤ編のメンバーを掲載中です。" },
+        { id: "chungmun", label: "チュンムン編", description: "チュンムン編のメンバーを掲載中です。" },
+        { id: "natsuyasumi-2023", label: "夏休み編2023", description: "夏休み編2023のメンバーを掲載中です。" },
+        { id: "gangneung", label: "カンヌン編", description: "カンヌン編のメンバーを掲載中です。" },
+        { id: "taipei", label: "台北編", description: "台北編のメンバーを掲載中です。" },
+        { id: "kowloon", label: "九龍編", description: "九龍編のメンバーを掲載中です。" }
+      ],
+      2022: [
+        { id: "mikan", label: "蜜柑編", description: "蜜柑編のメンバーを掲載中です。" },
+        { id: "sotsugyo-2022", label: "卒業編2022", description: "卒業編2022のメンバーを掲載中です。" },
+        { id: "hatsuniji", label: "初虹編", description: "初虹編のメンバーを掲載中です。" },
+        { id: "satsuki", label: "皐月編", description: "皐月編のメンバーを掲載中です。" },
+        { id: "konatsu", label: "小夏編", description: "小夏編のメンバーを掲載中です。" },
+        { id: "cebu-2022", label: "セブ島編", description: "セブ島編のメンバーを掲載中です。" },
+        { id: "phuket-2022", label: "プーケット編", description: "プーケット編のメンバーを掲載中です。" },
+        { id: "okinawa-2022", label: "沖縄編", description: "沖縄編のメンバーを掲載中です。" },
+        { id: "danang", label: "ダナン編", description: "ダナン編のメンバーを掲載中です。" }
+      ],
+      2021: [
+        { id: "akaiito", label: "赤い糸編", description: "赤い糸編のメンバーを掲載中です。" },
+        { id: "sotsugyo-2021", label: "卒業編2021", description: "卒業編2021のメンバーを掲載中です。" },
+        { id: "sakura-2021", label: "春桜編", description: "春桜編のメンバーを掲載中です。" },
+        { id: "suzuran", label: "鈴蘭編", description: "鈴蘭編のメンバーを掲載中です。" },
+        { id: "himawari", label: "向日葵編", description: "向日葵編のメンバーを掲載中です。" },
+        { id: "asagao", label: "朝顔編", description: "朝顔編のメンバーを掲載中です。" },
+        { id: "kosumosu", label: "秋桜編", description: "秋桜編のメンバーを掲載中です。" },
+        { id: "karin", label: "花梨編", description: "花梨編のメンバーを掲載中です。" }
+      ],
+      2020: [
+        { id: "sotsugyo-2020", label: "卒業編2020", description: "卒業編2020のメンバーを掲載中です。" },
+        { id: "aoiharu", label: "青い春編", description: "青い春編のメンバーを掲載中です。" },
+        { id: "ajisai", label: "紫陽花編", description: "紫陽花編のメンバーを掲載中です。" },
+        { id: "natsuzora", label: "夏空編", description: "夏空編のメンバーを掲載中です。" },
+        { id: "kinmokusei", label: "金木犀編", description: "金木犀編のメンバーを掲載中です。" },
+        { id: "akizuki", label: "秋月編", description: "秋月編のメンバーを掲載中です。" },
+        { id: "hoshizora", label: "星空編", description: "星空編のメンバーを掲載中です。" }
+      ],
+      2019: [
+        { id: "hawaii-2019", label: "ハワイ編", description: "ハワイ編のメンバーを掲載中です。" },
+        { id: "hongkong-disney", label: "香港ディズニーランド編", description: "香港ディズニーランド編のメンバーを掲載中です。" },
+        { id: "jeju", label: "韓国チェジュ島編", description: "韓国チェジュ島編のメンバーを掲載中です。" },
+        { id: "natsuyasumi-2019", label: "夏休み編", description: "夏休み編のメンバーを掲載中です。" },
+        { id: "seoul-2019", label: "ソウル編", description: "ソウル編のメンバーを掲載中です。" },
+        { id: "taiwan-2019", label: "台湾編", description: "台湾編のメンバーを掲載中です。" },
+        { id: "guam-2019", label: "グアム編", description: "グアム編のメンバーを掲載中です。" },
+        { id: "fuyuyasumi-2019", label: "冬休み編", description: "冬休み編のメンバーを掲載中です。" }
+      ],
+      2018: [
+        { id: "guam-2018", label: "第10弾 グアム編", description: "第10弾 グアム編のメンバーを掲載中です。" },
+        { id: "danang-2018", label: "第11弾 ダナン編", description: "第11弾 ダナン編のメンバーを掲載中です。" },
+        { id: "busan-2018", label: "第12弾 釜山編", description: "第12弾 釜山編のメンバーを掲載中です。" },
+        { id: "australia-2018", label: "第13弾 オーストラリア編", description: "第13弾 オーストラリア編のメンバーを掲載中です。" },
+        { id: "revenge-2018", label: "第14弾 リベンジ編", description: "第14弾 リベンジ編のメンバーを掲載中です。" }
+      ],
+      2017: [
+        { id: "season-1-2017", label: "第1弾", description: "第1弾のメンバーを掲載中です。" },
+        { id: "season-2-2017", label: "第2弾", description: "第2弾のメンバーを掲載中です。" },
+        { id: "season-3-2017", label: "第3弾", description: "第3弾のメンバーを掲載中です。" }
+      ]
     };
 
     const memberData = {
@@ -627,6 +715,705 @@
       ]
     };
 
+    Object.assign(memberData, {
+      "sotsugyo-2024-phuket": [
+        { nick: "るい", name: "村澤 瑠依", kana: "むらさわ るい", gender: "boys", birthday: "2007.05.14", grade: "16歳 高校2年", height: "171cm", prefecture: "東京", sns: ["Instagram: ruuui_mura", "X: Rui_YKagent", "TikTok: rui_mura"] },
+        { nick: "そうた", name: "米山 颯太", kana: "よねやま そうた", gender: "boys", birthday: "2005.10.21", grade: "18歳 高校3年", height: "169cm", prefecture: "大阪", sns: ["Instagram: _9lxx_x", "X: _9lxx_x", "TikTok: _9lxx_x"] },
+        { nick: "えいじ", name: "吉田 叡史", kana: "よしだ えいじ", gender: "boys", birthday: "2005.08.18", grade: "18歳 高校3年", height: "165cm", prefecture: "神奈川", sns: ["Instagram: eiji_age05", "X: eiji_age05", "TikTok: eiji_age05"] },
+        { nick: "だいすけ", name: "大西 大晟", kana: "おおにし だいすけ", gender: "boys", birthday: "2005.08.15", grade: "18歳 高校3年", height: "178cm", prefecture: "愛知", sns: ["Instagram: daisuke__0024"] },
+        { nick: "みさき", name: "木下 美怜", kana: "きのした みさき", gender: "boys", birthday: "2005.06.03", grade: "18歳 高校3年", height: "180cm", prefecture: "大阪", sns: [] },
+        { nick: "ケイト", name: "ケイト アレックス", kana: "けいと あれっくす", gender: "boys", birthday: "2005.07.28", grade: "18歳 高校3年", height: "178cm", prefecture: "大阪", sns: [] },
+        { nick: "そら", name: "中川 そら", kana: "なかがわ そら", gender: "girls", birthday: "2006.02.14", grade: "17歳 高校3年", height: "158cm", prefecture: "神奈川", sns: ["Instagram: sora_nakagawa0214", "X: sorasora_0214", "TikTok: o6_sra"] },
+        { nick: "きさき", name: "寺島 季咲", kana: "てらしま きさき", gender: "girls", birthday: "2006.09.20", grade: "17歳 高校2年", height: "161cm", prefecture: "東京", sns: ["Instagram: kisaki_920", "X: kisaki_0920", "TikTok: kisaki_920"] },
+        { nick: "みく", name: "田中 碧空", kana: "たなか みく", gender: "girls", birthday: "2005.05.06", grade: "18歳 高校3年", height: "160cm", prefecture: "京都", sns: ["Instagram: isaki_920", "TikTok: kisaki_920"] },
+        { nick: "ゆう", name: "早坂 ゆう", kana: "はやさか ゆう", gender: "girls", birthday: "2006.11.20", grade: "17歳 高校2年", height: "155cm", prefecture: "京都", sns: ["Instagram: hyskyu_1120", "X: yyuu112200", "TikTok: y1u1u2k0a"] },
+        { nick: "ゆのん", name: "中島 結音", kana: "なかじま ゆのん", gender: "girls", birthday: "2006.11.20", grade: "17歳 高校2年", height: "148cm", prefecture: "広島", sns: ["Instagram: yunon___1120", "X: tyan____yuno", "TikTok: yunon___1120"] }
+      ],
+      "sotsugyo-2024-cebu": [
+        { nick: "えいじ", name: "吉田 叡史", kana: "よしだ えいじ", gender: "boys", birthday: "2005.08.18", grade: "18歳 高校3年", height: "165cm", prefecture: "神奈川", sns: ["Instagram: eiji_age05", "X: eiji_age05", "TikTok: eiji_age05"] },
+        { nick: "そうた", name: "米山 颯太", kana: "よねやま そうた", gender: "boys", birthday: "2005.10.21", grade: "18歳 高校3年", height: "169cm", prefecture: "大阪", sns: ["Instagram: _9lxx_x", "X: _9lxx_x", "TikTok: _9lxx_x"] },
+        { nick: "もねる", name: "川尻 杜音", kana: "かわじり もねる", gender: "boys", birthday: "2005.11.09", grade: "18歳 高校3年", height: "181cm", prefecture: "神奈川", sns: ["Instagram: moner_u2", "X: moner_u2", "TikTok: moner_you_too"] },
+        { nick: "わたる", name: "伊藤 航", kana: "いとう わたる", gender: "boys", birthday: "2005.10.05", grade: "17歳 高校3年", height: "176cm", prefecture: "神奈川", sns: ["Instagram: wataru.ito.05", "X: w__ataruru", "TikTok: wa10._.ta05ru"] },
+        { nick: "りゅうじん", name: "那須川 龍心", kana: "なすかわ りゅうじん", gender: "boys", birthday: "2006.05.16", grade: "17歳 高校2年", height: "164cm", prefecture: "千葉", sns: ["Instagram: ryujinnasukawa", "X: teppenryujin", "TikTok: ryujinnasukawa0516"] },
+        { nick: "ばお", name: "Bao", kana: "ばお", gender: "boys", birthday: "2007.12.07", grade: "16歳 高校1年", height: "178cm", prefecture: "兵庫", sns: ["Instagram: bao_0127", "TikTok: bao_0127"] },
+        { nick: "そら", name: "中川 そら", kana: "なかがわ そら", gender: "girls", birthday: "2006.02.14", grade: "17歳 高校3年", height: "158cm", prefecture: "神奈川", sns: ["Instagram: sora_nakagawa0214", "X: sorasora_0214", "TikTok: o6_sra"] },
+        { nick: "きさき", name: "寺島 季咲", kana: "てらしま きさき", gender: "girls", birthday: "2006.09.20", grade: "17歳 高校2年", height: "161cm", prefecture: "東京", sns: ["Instagram: kisaki_920", "X: kisaki_0920", "TikTok: kisaki_920"] },
+        { nick: "ゆうか", name: "赤木 優香", kana: "あかぎ ゆうか", gender: "girls", birthday: "2005.10.15", grade: "18歳 高校3年", height: "158cm", prefecture: "大阪", sns: ["Instagram: yuuukaa1015", "X: yuuukaa1015", "TikTok: 18.yuuka"] },
+        { nick: "ももか", name: "板倉 ももか", kana: "いたくら ももか", gender: "girls", birthday: "2007.07.27", grade: "16歳 高校1年", height: "161cm", prefecture: "愛知", sns: ["Instagram: momo_fif", "TikTok: momoka073"] },
+        { nick: "のあ", name: "田仲 埜愛", kana: "たなか のあ", gender: "girls", birthday: "2007.03.08", grade: "17歳 高校2年", height: "160cm", prefecture: "大阪", sns: ["Instagram: noanoa_38", "X: NoaNoamodel", "TikTok: noanoa_38"] },
+        { nick: "まう", name: "小國 舞羽", kana: "おぐに まう", gender: "girls", birthday: "2008.01.24", grade: "15歳 高校1年", height: "163cm", prefecture: "東京", sns: ["Instagram: mau124.luv", "X: mau124_luv", "TikTok: mau124.luv"] }
+      ],
+      "nhatrang": [
+        { nick: "いっさ", name: "松本 一彩", kana: "まつもと いっさ", gender: "boys", birthday: "2006.08.16", grade: "17歳 高校3年", height: "176cm", prefecture: "奈良", sns: ["Instagram: issa_.24081", "X: issa_24081", "TikTok: issa_.240816"] },
+        { nick: "けんたろう", name: "中村 健太朗", kana: "なかむら けんたろう", gender: "boys", birthday: "2006.08.03", grade: "17歳 高校3年", height: "175cm", prefecture: "愛知", sns: ["Instagram: 20_06_kentaro", "X: 8ken3n", "TikTok: 2006_ken_"] },
+        { nick: "るい", name: "村澤 瑠依", kana: "むらさわ るい", gender: "boys", birthday: "2007.05.14", grade: "16歳 高校2年", height: "171cm", prefecture: "東京", sns: ["Instagram: ruuui_mura", "X: Rui_YKagent", "TikTok: rui_mura"] },
+        { nick: "たいよう", name: "忠村 太陽", kana: "ただむら たいよう", gender: "boys", birthday: "2006.09.08", grade: "17歳 高校3年", height: "175cm", prefecture: "北海道", sns: [] },
+        { nick: "てる", name: "川端 輝", kana: "かわばた てる", gender: "boys", birthday: "2007.10.19", grade: "16歳 高校2年", height: "172cm", prefecture: "滋賀", sns: ["Instagram: k_teru1019", "X: k_teru1019", "TikTok: k_teru1019"] },
+        { nick: "エリカ", name: "村重 エリカ", kana: "むらしげ えりか", gender: "girls", birthday: "2006.05.05", grade: "17歳 高校3年", height: "159cm", prefecture: "山口", sns: [] },
+        { nick: "みなつ", name: "みなつ", kana: "みなつ", gender: "girls", birthday: "2007.09.29", grade: "16歳 高校2年", height: "未公開", prefecture: "埼玉", sns: [] },
+        { nick: "ラナ", name: "谷田 ラナ", kana: "たにだ らな", gender: "girls", birthday: "2008.03.16", grade: "16歳 高校2年", height: "160cm", prefecture: "三重", sns: ["Instagram: tanidalana_0316", "X: tanidalana_0316", "TikTok: tanidalana_0316"] },
+        { nick: "りあ", name: "米澤 璃彩", kana: "よねざわ りあ", gender: "girls", birthday: "2007.05.19", grade: "16歳 高校2年", height: "未公開", prefecture: "北海道", sns: ["Instagram: yonezawa_ria", "X: yonezawa_ria", "TikTok: yonezawa_ria"] },
+        { nick: "ゆう", name: "早坂 ゆう", kana: "はやさか ゆう", gender: "girls", birthday: "2006.11.20", grade: "17歳 高校3年", height: "未公開", prefecture: "大阪", sns: ["Instagram: hyskyu_1120", "X: yyuu112200", "TikTok: y1u1u2k0a"] }
+      ],
+      "busan-2024": [
+        { nick: "てる", name: "川端 輝", kana: "かわばた てる", gender: "boys", birthday: "2007.10.19", grade: "16歳 高校2年", height: "172cm", prefecture: "滋賀", sns: ["Instagram: k_teru1019", "X: k_teru1019", "TikTok: k_teru1019"] },
+        { nick: "ひろむ", name: "富口 大夢", kana: "とみぐち ひろむ", gender: "boys", birthday: "2008.01.15", grade: "16歳 高校2年", height: "173cm", prefecture: "福岡", sns: ["Instagram: bigdream2008", "X: hiromu_2008", "TikTok: bigdream0115"] },
+        { nick: "そうま", name: "阿部 創馬", kana: "あべ そうま", gender: "boys", birthday: "2006.08.14", grade: "17歳 高校3年", height: "170cm", prefecture: "東京", sns: ["Instagram: soma_abee", "X: soma_abee", "TikTok: soma_abee"] },
+        { nick: "じゅま", name: "坂本 ジェルー 寿真", kana: "さかもと じぇるー じゅま", gender: "boys", birthday: "2006.09.29", grade: "17歳 高校3年", height: "179cm", prefecture: "埼玉", sns: ["Instagram: juma__jerau", "X: juma__jerau", "TikTok: juma_jumeeeee"] },
+        { nick: "ゆう", name: "早坂 ゆう", kana: "はやさか ゆう", gender: "girls", birthday: "2006.11.20", grade: "17歳 高校3年", height: "155cm", prefecture: "大阪", sns: ["Instagram: hyskyu_1120", "X: yyuu112200", "TikTok: y1u1u2k0a"] },
+        { nick: "ねね", name: "古園井 寧々", kana: "こぞのい ねね", gender: "girls", birthday: "2007.03.03", grade: "17歳 高校3年", height: "153cm", prefecture: "福岡", sns: [] },
+        { nick: "おとは", name: "倉八 音羽", kana: "くらはち おとは", gender: "girls", birthday: "2007.07.27", grade: "16歳 高校2年", height: "160cm", prefecture: "福岡", sns: ["Instagram: otoha.0727", "X: otoha0727", "TikTok: otoha0727"] },
+        { nick: "ひなの", name: "瀬川 陽菜乃", kana: "せがわ ひなの", gender: "girls", birthday: "2008.02.06", grade: "16歳 高校2年", height: "162cm", prefecture: "福岡", photo: "images.jpg", sns: ["Instagram: ponpon___2008", "X: ponpon___2008", "TikTok: ponpon_20080"] },
+        { nick: "せいら", name: "土屋 惺来", kana: "つちや せいら", gender: "girls", birthday: "2008.06.25", grade: "15歳 高校1年", height: "164cm", prefecture: "埼玉", sns: ["Instagram: seira773", "X: seira20080625", "TikTok: seira_0625"] }
+      ],
+      "huahin-2024": [
+        { nick: "じゅま", name: "坂本 ジェルー 寿真", kana: "さかもと じぇるー じゅま", gender: "boys", birthday: "2006.09.29", grade: "17歳 高校3年", height: "179cm", prefecture: "埼玉", sns: ["Instagram: juma__jerau", "X: juma__jerau", "TikTok: juma_jumeeeee"] },
+        { nick: "しょう", name: "角田 翔", kana: "つのだ しょう", gender: "boys", birthday: "2006.08.22", grade: "17歳 高校3年", height: "179cm", prefecture: "愛知", sns: ["Instagram: sho_08.22", "X: SHOoooooo000000", "TikTok: shoooooo0000000"] },
+        { nick: "せな", name: "黒木 聖那", kana: "くろき せな", gender: "boys", birthday: "2006.07.18", grade: "17歳 高校3年", height: "179cm", prefecture: "大阪", sns: ["Instagram: sena_0_7.18", "X: kuri__mupannn", "TikTok: kuroki._sena"] },
+        { nick: "そうま", name: "阿部 創馬", kana: "あべ そうま", gender: "boys", birthday: "2006.08.14", grade: "17歳 高校3年", height: "170cm", prefecture: "東京", sns: ["Instagram: soma_abee", "X: soma_abee", "TikTok: soma_abee"] },
+        { nick: "れん", name: "藤井 恋", kana: "ふじい れん", gender: "boys", birthday: "2007.04.16", grade: "17歳 高校3年", height: "175cm", prefecture: "大阪", sns: [] },
+        { nick: "のの", name: "徳永 暖乃", kana: "とくなが のの", gender: "girls", birthday: "2007.02.07", grade: "17歳 高校3年", height: "158cm", prefecture: "東京", sns: [] },
+        { nick: "ひなの", name: "瀬川 陽菜乃", kana: "せがわ ひなの", gender: "girls", birthday: "2008.02.06", grade: "16歳 高校2年", height: "162cm", prefecture: "福岡", photo: "images.jpg", sns: ["Instagram: ponpon___2008", "X: ponpon___2008", "TikTok: ponpon_20080"] },
+        { nick: "みあ", name: "藤田 みあ", kana: "ふじた みあ", gender: "girls", birthday: "2006.06.09", grade: "18歳 高校3年", height: "158cm", prefecture: "京都", sns: ["Instagram: miamiamia2006", "X: Mia15511887", "TikTok: mia_f069"] },
+        { nick: "みつき", name: "北爪 美月", kana: "きたづめ みつき", gender: "girls", birthday: "2007.08.14", grade: "16歳 高校2年", height: "160cm", prefecture: "東京", sns: ["Instagram: __.michox.__", "X: __michox__", "TikTok: mizukidasinnn"] },
+        { nick: "りあ", name: "米澤 璃彩", kana: "よねざわ りあ", gender: "girls", birthday: "2007.05.09", grade: "17歳 高校2年", height: "164cm", prefecture: "北海道", sns: ["Instagram: yonezawa_ria", "X: yonezawa_ria", "TikTok: yonezawa_ria"] }
+      ],
+      "natsuyasumi-2024": [
+        { nick: "じゅま", name: "坂本 ジェルー 寿真", kana: "さかもと じぇるー じゅま", gender: "boys", birthday: "2006.09.29", grade: "17歳 高校3年", height: "179cm", prefecture: "埼玉", sns: ["Instagram: juma__jerau", "X: juma__jerau", "TikTok: juma_jumeeeee"] },
+        { nick: "せな", name: "黒木 聖那", kana: "くろき せな", gender: "boys", birthday: "2006.07.18", grade: "17歳 高校3年", height: "179cm", prefecture: "大阪", sns: ["Instagram: sena_0_7.18", "X: kuri__mupannn", "TikTok: kuroki._sena"] },
+        { nick: "けんたろう", name: "中村 健太郎", kana: "なかむら けんたろう", gender: "boys", birthday: "2006.08.03", grade: "17歳 高校3年", height: "175cm", prefecture: "愛知", sns: ["Instagram: 20_06_kentaro", "X: 20_06_kentaro", "TikTok: 2006_ken_"] },
+        { nick: "りゅうじん", name: "那須川 龍心", kana: "なすかわ りゅうじん", gender: "boys", birthday: "2006.05.16", grade: "18歳 高校3年", height: "164cm", prefecture: "千葉", sns: ["Instagram: ryujinnasukawa", "X: teppenryujin", "TikTok: ryujinnasukawa0516"] },
+        { nick: "こうき", name: "髙橋 紅輝", kana: "たかはし こうき", gender: "boys", birthday: "2006.06.26", grade: "18歳 高校3年", height: "184cm", prefecture: "北海道", sns: ["Instagram: t_kouki0626", "X: t_kouki0626", "TikTok: ko_ki.0626"] },
+        { nick: "りあ", name: "米澤 りあ", kana: "よねざわ りあ", gender: "girls", birthday: "2007.05.09", grade: "17歳 高校3年", height: "152cm", prefecture: "北海道", sns: ["Instagram: yonezawa_ria", "X: yonezawa_ria", "TikTok: yonezawa_ria"] },
+        { nick: "みあ", name: "藤田 みあ", kana: "ふじた みあ", gender: "girls", birthday: "2006.06.09", grade: "18歳 高校3年", height: "158cm", prefecture: "京都", sns: ["Instagram: miamiamia2006", "X: Mia15511887", "TikTok: mia_f069"] },
+        { nick: "じゅり", name: "榊原 樹里", kana: "さかきばら じゅり", gender: "girls", birthday: "2007.02.12", grade: "17歳 高校3年", height: "162cm", prefecture: "愛知", sns: ["Instagram: juri_._0212", "X: juri02563818", "TikTok: juri_._0212"] },
+        { nick: "りのん", name: "多田 梨音", kana: "ただ りのん", gender: "girls", birthday: "2008.06.07", grade: "16歳 高校1年", height: "160cm", prefecture: "大阪", sns: ["Instagram: nonnon_0607", "TikTok: rinon_0607"] },
+        { nick: "その", name: "平松 想乃", kana: "ひらまつ その", gender: "girls", birthday: "2006.11.13", grade: "17歳 高校3年", height: "158cm", prefecture: "京都", sns: ["Instagram: sono7na", "X: sono7na", "TikTok: sono7na"] },
+        { nick: "ゆう", name: "早坂 ゆう", kana: "はやさか ゆう", gender: "girls", birthday: "2006.11.20", grade: "17歳 高校3年", height: "155cm", prefecture: "大阪", sns: ["Instagram: hyskyu_1120", "X: yyuu112200", "TikTok: y1u1u2k0a"] }
+      ],
+      "dongtan": [
+        { nick: "しょう", name: "角田 翔", kana: "つのだ しょう", gender: "boys", birthday: "2006.09.29", grade: "17歳 高校3年", height: "179cm", prefecture: "愛知", sns: ["Instagram: sho_08.22", "X: SHOoooooo000000", "TikTok: shoooooo0000000"] },
+        { nick: "せり", name: "松井 芹", kana: "まつい せり", gender: "boys", birthday: "2006.07.18", grade: "17歳 高校1年", height: "175cm", prefecture: "福岡", sns: ["Instagram: matsui_seri", "X: seri__matsui", "TikTok: seri___matsui"] },
+        { nick: "ゆうすけ", name: "原屋 裕介", kana: "はらや ゆうすけ", gender: "boys", birthday: "2006.08.03", grade: "17歳 高校3年", height: "175cm", prefecture: "熊本", sns: ["Instagram: kaoume._.suu", "X: h_yusk9", "TikTok: motimotida4"] },
+        { nick: "こお", name: "飯沼 虎王", kana: "いいぬま こお", gender: "boys", birthday: "2006.05.16", grade: "18歳 高校1年", height: "170cm", prefecture: "奈良", sns: ["Instagram: 17.koo", "X: ko_numa50", "TikTok: ko_numa50"] },
+        { nick: "きんご", name: "内田 金吾", kana: "うちだ きんご", gender: "boys", birthday: "2006.06.26", grade: "18歳 高校1年", height: "173cm", prefecture: "福岡", sns: ["Instagram: kingo_king", "Instagram: kingo0820", "X: w3vU7GDlwx96908", "TikTok: kingo0820"] },
+        { nick: "せいら", name: "土屋 惺来", kana: "つちや せいら", gender: "girls", birthday: "2008.06.25", grade: "16歳 高校1年", height: "164cm", prefecture: "埼玉", sns: ["Instagram: seira773", "X: seira20080625", "TikTok: seira_0625"] },
+        { nick: "まほこ", name: "瀬乃 真帆子", kana: "せの まほこ", gender: "girls", birthday: "2006.06.09", grade: "18歳 高校2年", height: "154cm", prefecture: "静岡", sns: ["Instagram: mahoko.0918", "X: makkonn0918", "TikTok: mahoko0918"] },
+        { nick: "かな", name: "のだかな", kana: "のだかな", gender: "girls", birthday: "2007.02.12", grade: "17歳 高校1年", height: "155cm", prefecture: "埼玉", sns: ["Instagram: noda_kana.23", "TikTok: noda_.kana.23"] },
+        { nick: "じゅりな", name: "はなさきじゅりな", kana: "はなさきじゅりな", gender: "girls", birthday: "2008.06.07", grade: "16歳 高校3年", height: "159cm", prefecture: "埼玉", sns: ["Instagram: hanasaki_jurina", "TikTok: hanasaki_jurina"] },
+        { nick: "めいあ", name: "川野 明愛", kana: "かわの めいあ", gender: "girls", birthday: "2006.11.13", grade: "17歳 高校1年", height: "153cm", prefecture: "熊本", sns: ["Instagram: kawano_meia", "X: ____j4pqxll", "TikTok: kawano_meia"] }
+      ],
+      "gyeongju": [
+        { nick: "そうま", name: "阿部 創馬", kana: "あべ そうま", gender: "boys", birthday: "2006.08.14", grade: "18歳 高校3年", height: "170cm", prefecture: "東京", sns: ["Instagram: soma_abee", "X: soma_abee", "TikTok: soma_abee"] },
+        { nick: "こお", name: "飯沼 虎王", kana: "いいぬま こお", gender: "boys", birthday: "2006.05.16", grade: "18歳 高校1年", height: "170cm", prefecture: "奈良", sns: ["Instagram: 17.koo", "X: ko_numa50", "TikTok: ko_numa50"] },
+        { nick: "きょうすけ", name: "林 京介", kana: "はやし きょうすけ", gender: "boys", birthday: "2008.09.14", grade: "16歳 高校1年", height: "175cm", prefecture: "愛知", sns: ["Instagram: kyousuke.0914hayashi", "X: UiJj880065", "TikTok: kyo8840"] },
+        { nick: "だいき", name: "赤沢 大輝", kana: "あかざわ だいき", gender: "boys", birthday: "2006.07.08", grade: "18歳 高校3年", height: "178cm", prefecture: "大阪", sns: [] },
+        { nick: "とうき", name: "上野 道生", kana: "うえの とうき", gender: "boys", birthday: "2006.09.21", grade: "18歳 高校3年", height: "170cm", prefecture: "大阪", sns: [] },
+        { nick: "じゅり", name: "榊原 樹里", kana: "さかきばら じゅり", gender: "girls", birthday: "2007.02.12", grade: "17歳 高校3年", height: "162cm", prefecture: "愛知", sns: ["Instagram: juri_._0212", "X: juri02563818", "TikTok: juri_._0212"] },
+        { nick: "めいあ", name: "川野 明愛", kana: "かわの めいあ", gender: "girls", birthday: "2008.06.06", grade: "16歳 高校1年", height: "153cm", prefecture: "熊本", sns: ["Instagram: kawano_meia", "X: kawano_meia", "TikTok: kawano_meia"] },
+        { nick: "あやな", name: "大澤 綾菜", kana: "おおさわ あやな", gender: "girls", birthday: "2007.03.22", grade: "17歳 高校3年", height: "159cm", prefecture: "岐阜", sns: ["Instagram: lix3ay", "X: ayana_osawa", "TikTok: uxxu60"] },
+        { nick: "めい", name: "天宮 芽唯", kana: "あまみや めい", gender: "girls", birthday: "2007.06.14", grade: "17歳 高校2年", height: "159cm", prefecture: "福岡", sns: ["Instagram: mei__amamiya", "TikTok: mei_ama"] },
+        { nick: "れお", name: "生方 澪桜", kana: "うぶかた れお", gender: "girls", birthday: "2006.12.10", grade: "17歳 高校3年", height: "161cm", prefecture: "大阪", sns: ["Instagram: reo_.oo", "X: reo101512", "TikTok: reo_.oo"] }
+      ],
+      "fuyuyasumi-2024": [
+        { nick: "たくや", name: "林田 拓也", kana: "はやしだ たくや", gender: "boys", birthday: "2006.12.03", grade: "17歳 高校3年", height: "172cm", prefecture: "宮崎", sns: ["Instagram: takuya.120318", "TikTok: takuya_120318"] },
+        { nick: "まのあ", name: "河野 真ノ彩", kana: "こうの まのあ", gender: "boys", birthday: "2006.04.27", grade: "18歳 高校3年", height: "173cm", prefecture: "千葉", sns: ["Instagram: manoa_kono", "X: Mfg59156823", "TikTok: kono_manoa"] },
+        { nick: "らいと", name: "奥村 頼斗", kana: "おくむら らいと", gender: "boys", birthday: "2006.08.13", grade: "18歳 高校3年", height: "173cm", prefecture: "京都", sns: ["Instagram: okumura_raito", "X: OkumuraRaito", "TikTok: okumuraraito"] },
+        { nick: "こう", name: "三富 昂", kana: "みとみ こう", gender: "boys", birthday: "2006.08.18", grade: "18歳 高校3年", height: "180cm", prefecture: "神奈川", sns: ["Instagram: mitomi_kou", "TikTok: ko__.o6"] },
+        { nick: "くめはる", name: "久米 陽斗", kana: "くめ はると", gender: "boys", birthday: "2006.04.30", grade: "18歳 高校3年", height: "177cm", prefecture: "愛知", sns: ["Instagram: kumesty", "X: kumesty", "TikTok: kume0430"] },
+        { nick: "らいち", name: "甲斐 虎壱", kana: "かい らいち", gender: "boys", birthday: "2008.02.15", grade: "16歳 高校2年", height: "179cm", prefecture: "宮崎", sns: ["Instagram: raichi0215", "X: kairaichi0215", "TikTok: kairaichi08"] },
+        { nick: "りのん", name: "多田 梨音", kana: "ただ りのん", gender: "girls", birthday: "2008.06.07", grade: "16歳 高校1年", height: "160cm", prefecture: "大阪", sns: ["Instagram: nonnon_0607", "X: nonnon_rinon", "TikTok: rinon_0607"] },
+        { nick: "はるな", name: "村谷 はるな", kana: "むらたに はるな", gender: "girls", birthday: "2006.05.07", grade: "18歳 高校3年", height: "167cm", prefecture: "山口", sns: ["Instagram: _haruchi.05", "X: haru_jk07", "TikTok: llun_377"] },
+        { nick: "かずな", name: "栗原 一菜", kana: "くりはら かずな", gender: "girls", birthday: "2006.11.24", grade: "17歳 高校3年", height: "168cm", prefecture: "愛知", sns: ["Instagram: kuri_kaa1124", "X: kuri_kaa1124", "TikTok: kuri_kaa1124"] },
+        { nick: "みづき", name: "秋山 みづき", kana: "あきやま みづき", gender: "girls", birthday: "2008.03.04", grade: "16歳 高校2年", height: "160cm", prefecture: "東京", sns: ["Instagram: 3.zuki2", "X: 5n8Sr", "TikTok: miii.500"] },
+        { nick: "まほこ", name: "瀬乃 真帆子", kana: "せの まほこ", gender: "girls", birthday: "2007.09.18", grade: "17歳 高校2年", height: "154cm", prefecture: "東京", sns: ["Instagram: mahoko.0918", "X: makkonn0918", "TikTok: mahoko0918"] }
+      ]
+    });
+
+    const p = (nick, name, kana, gender, birthday, grade, prefecture, sns = [], height = "未公開") => ({
+      nick,
+      name,
+      kana,
+      gender,
+      birthday,
+      grade,
+      height,
+      prefecture,
+      sns
+    });
+
+    Object.assign(memberData, {
+      "samui": [
+        p("こはる", "黒江 心温", "くろえ こはる", "girls", "2005.09.07", "高校2年", "福岡", ["Instagram: koharun_586", "X: Koharu_0586_", "TikTok: koharun.0586"]),
+        p("あいみ", "伊藤 愛依海", "いとう あいみ", "girls", "2005.12.27", "高校2年", "愛知", ["Instagram: aimi___1227", "X: aimi_no04", "TikTok: aimin_1227"]),
+        p("りょうか", "折田 涼夏", "おりた りょうか", "girls", "2004.07.20", "高校3年", "北海道", ["Instagram: ryoka_0720", "X: ryoka720", "TikTok: ryoka_720"]),
+        p("セシル", "菜那 セシル", "なな せしる", "girls", "未公開", "高校3年", "未公開", []),
+        p("きょうへい", "船山 恭兵", "ふなやま きょうへい", "boys", "2004.10.16", "高校3年", "千葉", ["Instagram: kyouhei321", "X: Kyouhei2022", "TikTok: kyouhei0321"]),
+        p("はると", "大枝 晴大", "おおえだ はると", "boys", "未公開", "高校3年", "未公開", []),
+        p("ましろ", "大橋 真白", "おおはし ましろ", "boys", "未公開", "高校3年", "未公開", []),
+        p("たいし", "池田 大志", "いけだ たいし", "boys", "未公開", "高校3年", "未公開", []),
+        p("さんざ", "久保田 燦", "くぼた さんざ", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "sotsugyo-2023": [
+        p("りょうか", "折田 涼夏", "おりた りょうか", "girls", "2004.07.20", "高校3年", "北海道", ["Instagram: ryoka_0720", "X: ryoka720", "TikTok: ryoka_720"]),
+        p("きさき", "寺島 季咲", "てらしま きさき", "girls", "2006.09.20", "高校1年", "東京", ["Instagram: kisaki_920", "X: kisaki_0920", "TikTok: kisaki_920"]),
+        p("セシル", "菜那 セシル", "なな せしる", "girls", "未公開", "高校3年", "未公開", []),
+        p("ねね", "永野 好音", "ながの ねね", "girls", "2006.10.06", "高校1年", "大阪", ["Instagram: n.__.ene0840", "X: nenemonsterr", "TikTok: nenemonsterr"]),
+        p("みるき", "雨宮 未苺", "あめみや みるき", "girls", "未公開", "高校2年", "未公開", []),
+        p("とおま", "廣居 永真", "ひろい とおま", "boys", "2004.06.28", "高校3年", "兵庫", ["Instagram: to_ma_hiroi", "X: _eungho06"]),
+        p("くにはる", "國本 陽斗", "くにもと はると", "boys", "未公開", "高校3年", "未公開", []),
+        p("えだはる", "大枝 晴大", "おおえだ はると", "boys", "未公開", "高校3年", "未公開", []),
+        p("いさ", "北本 要世", "きたもと いさ", "boys", "未公開", "高校3年", "未公開", []),
+        p("りく", "山田 なる久", "やまだ なるひさ", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "phuquoc": [
+        p("ねね", "永野 好音", "ながの ねね", "girls", "2006.10.06", "高校2年", "大阪", ["Instagram: n.__.ene0840", "X: nenemonsterr", "TikTok: nenemonsterr"]),
+        p("あいさ", "細川 愛沙", "ほそかわ あいさ", "girls", "2007.10.29", "高校1年", "千葉", ["Instagram: aaaisa.d.r.chihuahua", "X: aaaisa1029", "TikTok: aisa.1029"]),
+        p("ひなた", "林 姫奈妙", "はやし ひなた", "girls", "未公開", "高校3年", "未公開", []),
+        p("しおり", "百田 汐里", "ももた しおり", "girls", "未公開", "高校1年", "未公開", []),
+        p("ゆら", "新井 侑良", "あらい ゆら", "girls", "2005.10.23", "高校3年", "大阪", ["Instagram: ___yuragram", "X: araiyura", "TikTok: yurachandesu"]),
+        p("やまと", "須藤 大和", "すどう やまと", "boys", "2005.08.28", "高校3年", "千葉", ["Instagram: yamat_o828", "X: yama_to0828", "TikTok: yama_828"]),
+        p("たいし", "池田 大志", "いけだ たいし", "boys", "未公開", "高校3年", "未公開", []),
+        p("はなみち", "植野 花道", "うえの はなみち", "boys", "未公開", "高校3年", "未公開", []),
+        p("ましろ", "大橋 真白", "おおはし ましろ", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "pattaya": [
+        p("ゆのん", "中島 結音", "なかじま ゆのん", "girls", "2006.11.20", "高校2年", "広島", ["Instagram: yunon___1120", "X: tyan____yuno", "TikTok: yunon___1120"]),
+        p("その", "平松 想乃", "ひらまつ その", "girls", "2006.11.13", "高校2年", "岡山", ["Instagram: sono7na", "X: sono7na", "TikTok: sono7na"]),
+        p("ひなた", "小串 日葵", "おぐし ひなた", "girls", "2005.12.05", "高校3年", "大分", ["Instagram: hinata.ogushi", "X: ogshnt_17", "TikTok: hinata.ogushi"]),
+        p("ねね", "古園井 寧々", "こぞのい ねね", "girls", "未公開", "高校2年", "福岡", []),
+        p("じゅんのすけ", "岩本 准之介", "いわもと じゅんのすけ", "boys", "未公開", "高校3年", "未公開", []),
+        p("たいし", "池田 大志", "いけだ たいし", "boys", "未公開", "高校3年", "未公開", []),
+        p("はなみち", "植野 花道", "うえの はなみち", "boys", "未公開", "高校3年", "未公開", []),
+        p("たいら", "内山 大翔", "うちやま たいら", "boys", "未公開", "高校3年", "未公開", []),
+        p("かいゆう", "栗原 海夕", "くりはら かいゆう", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "chungmun": [
+        p("ひなた", "小串 日葵", "おぐし ひなた", "girls", "2005.12.05", "高校3年", "大分", ["Instagram: hinata.ogushi", "X: ogshnt_17", "TikTok: hinata.ogushi"]),
+        p("のあ", "田仲 埜愛", "たなか のあ", "girls", "2007.03.08", "高校2年", "大阪", ["Instagram: noanoa_38", "X: NoaNoamodel", "TikTok: noanoa_38"]),
+        p("メガン", "夏川 メガン", "なつかわ めがん", "girls", "2006.08.22", "高校2年", "大阪", ["Instagram: _megann.282", "TikTok: megan1761"]),
+        p("とあ", "山口 永愛", "やまぐち とあ", "girls", "未公開", "高校2年", "兵庫", []),
+        p("さつき", "長濱 薩生", "ながはま さつき", "boys", "2005.05.22", "高校3年", "鹿児島", ["Instagram: sattun.05s", "X: sattun05s", "TikTok: sattun.05s"]),
+        p("えいと", "菊地 瑛仁", "きくち えいと", "boys", "未公開", "高校3年", "岩手", []),
+        p("ましろ", "大橋 真白", "おおはし ましろ", "boys", "未公開", "高校3年", "未公開", []),
+        p("ひろむ", "富口 大夢", "とみぐち ひろむ", "boys", "2008.01.15", "高校1年", "福岡", ["Instagram: bigdream2008", "X: hiromu_2008", "TikTok: bigdream0115"]),
+        p("はると", "八幡 晴人", "やわた はると", "boys", "2005.12.28", "高校3年", "東京", ["Instagram: haruto_yawata", "X: haruto_yawata", "TikTok: yawata.haruto"])
+      ],
+      "natsuyasumi-2023": [
+        p("のあ", "田仲 埜愛", "たなか のあ", "girls", "2007.03.08", "高校2年", "大阪", ["Instagram: noanoa_38", "X: NoaNoamodel", "TikTok: noanoa_38"]),
+        p("まう", "小國 舞羽", "おぐに まう", "girls", "2008.01.24", "高校1年", "東京", ["Instagram: mau124.luv", "X: mau124_luv", "TikTok: mau124.luv"]),
+        p("れい", "向井 怜衣", "むかい れい", "girls", "2007.06.25", "高校1年", "広島", []),
+        p("わか", "吉田 羽花", "よしだ わか", "girls", "2006.12.26", "高校2年", "東京", []),
+        p("ゆづき", "大嶺 夢月希", "おおみね ゆづき", "girls", "未公開", "高校2年", "沖縄", []),
+        p("はなみち", "植野 花道", "うえの はなみち", "boys", "未公開", "高校3年", "未公開", []),
+        p("さつき", "長濱 薩生", "ながはま さつき", "boys", "2005.05.22", "高校3年", "鹿児島", ["Instagram: sattun.05s", "X: sattun05s", "TikTok: sattun.05s"]),
+        p("しょう", "髙橋 翔", "たかはし しょう", "boys", "未公開", "高校3年", "未公開", []),
+        p("みひろ", "小幡 海潤", "おばた みひろ", "boys", "未公開", "高校3年", "未公開", []),
+        p("てる", "川端 輝", "かわばた てる", "boys", "2007.10.19", "高校2年", "滋賀", ["Instagram: k_teru1019", "X: k_teru1019", "TikTok: k_teru1019"])
+      ],
+      "gangneung": [
+        p("みう", "磯村 美羽", "いそむら みう", "girls", "未公開", "高校3年", "未公開", []),
+        p("りんか", "りんか", "りんか", "girls", "未公開", "高校2年", "未公開", []),
+        p("あやか", "中山 あやか", "なかやま あやか", "girls", "未公開", "高校2年", "未公開", []),
+        p("まき", "冨永 真姫", "とみなが まき", "girls", "2007.10.03", "高校1年", "千葉", ["Instagram: t_maki1003", "X: t_maki1003", "TikTok: kuma._.0718"]),
+        p("はなみち", "植野 花道", "うえの はなみち", "boys", "未公開", "高校3年", "未公開", []),
+        p("はると", "八幡 晴人", "やわた はると", "boys", "2005.12.28", "高校3年", "東京", ["Instagram: haruto_yawata", "X: haruto_yawata", "TikTok: yawata.haruto"]),
+        p("しゅう", "武田 愁", "たけだ しゅう", "boys", "2005.11.20", "高校3年", "神奈川", ["Instagram: shu__takeda", "X: takeda__shu", "TikTok: shu_kun310"]),
+        p("えいじ", "吉田 叡史", "よしだ えいじ", "boys", "2005.08.18", "高校3年", "神奈川", ["Instagram: eiji_age05", "X: eiji_age05", "TikTok: eiji_age05"]),
+        p("しょうご", "今富 将吾", "いまとみ しょうご", "boys", "2005.05.15", "高校3年", "埼玉", ["Instagram: shogo_imatomi", "X: shogo_imatomi", "TikTok: shogo_imatomi"])
+      ],
+      "taipei": [
+        p("わか", "吉田 羽花", "よしだ わか", "girls", "2006.12.26", "高校2年", "東京", []),
+        p("ゆあん", "ゆあん", "ゆあん", "girls", "未公開", "高校2年", "未公開", []),
+        p("ひより", "アンジー ひより", "あんじー ひより", "girls", "未公開", "高校2年", "未公開", []),
+        p("あみ", "大竹 愛美", "おおたけ あみ", "girls", "未公開", "高校2年", "未公開", []),
+        p("めいり", "永松 芽麗", "ながまつ めいり", "girls", "未公開", "高校2年", "未公開", []),
+        p("わつらふ", "古沢 わつらふ", "ふるさわ わつらふ", "boys", "未公開", "高校3年", "未公開", []),
+        p("きせき", "林 奇跡", "はやし きせき", "boys", "未公開", "高校3年", "未公開", []),
+        p("ひろむ", "富口 大夢", "とみぐち ひろむ", "boys", "2008.01.15", "高校1年", "福岡", ["Instagram: bigdream2008", "X: hiromu_2008", "TikTok: bigdream0115"]),
+        p("たかと", "矢口 昂歩", "やぐち たかと", "boys", "2005.05.13", "高校3年", "宮城", ["Instagram: baretakunai_18", "X: tk91742669", "TikTok: baretakunai_18"]),
+        p("しゅうま", "呉 愁真", "くれ しゅうま", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "kowloon": [
+        p("はる", "矢口 桜咲", "やぐち はる", "girls", "2006.03.21", "高校3年", "東京", ["Instagram: paruchamu_0321", "X: paruchamu_0321_", "TikTok: paruchamu_0321"], "170cm"),
+        p("ひいろ", "鈴木 日彩", "すずき ひいろ", "girls", "2006.07.25", "高校2年", "京都", ["Instagram: hiiro_suzuki", "TikTok: suzukihiiro"], "168cm"),
+        p("きさき", "寺島 季咲", "てらしま きさき", "girls", "2006.09.20", "高校2年", "東京", ["Instagram: kisaki_920", "X: kisaki_0920", "TikTok: kisaki_920"], "161cm"),
+        p("そら", "中川 そら", "なかがわ そら", "girls", "2006.02.16", "高校3年", "神奈川", ["Instagram: sora_nakagawa0214", "TikTok: o6_sra"], "158cm"),
+        p("のりか", "千葉 紀佳", "ちば のりか", "girls", "2005.07.13", "高校3年", "東京", ["Instagram: norika_girl7", "TikTok: norsoyi00"], "157cm"),
+        p("たかと", "矢口 昂歩", "やぐち たかと", "boys", "2005.05.13", "高校3年", "宮城", ["Instagram: baretakunai_18", "X: tk91742669", "TikTok: baretakunai_18"], "181cm"),
+        p("ゆずき", "松田 謙希", "まつだ ゆずき", "boys", "2006.08.25", "高校2年", "千葉", ["Instagram: pine_ricefirld", "TikTok: y2k_pine"], "170cm"),
+        p("るい", "村澤 瑠依", "むらさわ るい", "boys", "2007.05.14", "高校1年", "東京", ["Instagram: ruuui_mura", "X: rui_ykagent", "TikTok: rui_mura"], "171cm"),
+        p("そうた", "米山 颯太", "よねやま そうた", "boys", "2005.10.21", "高校3年", "大阪", ["Instagram: _9lxx_x", "X: _9lxx_x", "TikTok: _9lxx_x"], "169cm")
+      ]
+    });
+
+    Object.assign(memberData, {
+      "mikan": [
+        p("ゆな", "水戸 由菜", "みと ゆな", "girls", "2004.04.07", "高校2年", "神奈川", ["Instagram: yuna_mito", "TikTok: yuna_mito"]),
+        p("しいな", "柚来 しいな", "ゆずき しいな", "girls", "2003.10.21", "高校3年", "神奈川", ["Instagram: shiina_yuzuki", "X: shiina_yuzuki"]),
+        p("るる", "実熊 瑠琉", "みくま るる", "girls", "2005.03.17", "高校2年", "兵庫", []),
+        p("りな", "折田 莉奈", "おりた りな", "girls", "未公開", "高校2年", "未公開", []),
+        p("まやと", "中里 真哉斗", "なかざと まやと", "boys", "2003.09.22", "高校3年", "千葉", []),
+        p("れん", "岡田 蓮", "おかだ れん", "boys", "2003.04.16", "高校3年", "熊本", []),
+        p("らいあ", "川西 雷亜", "かわにし らいあ", "boys", "2004.03.14", "高校3年", "大阪", []),
+        p("たいよう", "忠村 太陽", "ただむら たいよう", "boys", "2006.09.08", "高校1年", "北海道", []),
+        p("るきや", "松村 瑠輝也", "まつむら るきや", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "sotsugyo-2022": [
+        p("かれん", "崎代 夏怜", "さきしろ かれん", "girls", "未公開", "高校3年", "未公開", []),
+        p("キサラ", "松村 キサラ", "まつむら きさら", "girls", "2003.07.21", "高校3年", "静岡", []),
+        p("あやの", "増田 彩乃", "ますだ あやの", "girls", "2003.05.26", "高校3年", "愛知", []),
+        p("みるき", "雨宮 未苺", "あめみや みるき", "girls", "2005.09.02", "高校1年", "山梨", []),
+        p("みずき", "大野 瑞希", "おおの みずき", "girls", "未公開", "高校3年", "未公開", []),
+        p("れおん", "丸田 怜音", "まるた れおん", "boys", "2004.02.12", "高校3年", "愛知", []),
+        p("かいゆう", "千葉 海宙", "ちば かいゆう", "boys", "2003.06.17", "高校3年", "北海道", []),
+        p("しょうた", "瀧川 翔太", "たきがわ しょうた", "boys", "未公開", "高校3年", "愛知", []),
+        p("ちひろ", "早瀬 千潤", "はやせ ちひろ", "boys", "未公開", "高校3年", "千葉", []),
+        p("じゅんせい", "本島 純政", "もとじま じゅんせい", "boys", "2005.01.05", "高校2年", "東京", []),
+        p("けいと", "木下 敬斗", "きのした けいと", "boys", "未公開", "高校3年", "兵庫", [])
+      ],
+      "hatsuniji": [
+        p("ゆうか", "内山 優花", "うちやま ゆうか", "girls", "2005.04.28", "高校2年", "兵庫", []),
+        p("ゆいな", "古川 結菜", "こがわ ゆいな", "girls", "2005.01.30", "高校3年", "大阪", []),
+        p("ここあ", "谷 心愛", "たに ここあ", "girls", "2006.12.02", "高校1年", "北海道", []),
+        p("みゆ", "山崎 美優", "やまざき みゆ", "girls", "2005.09.27", "高校2年", "東京", []),
+        p("げんき", "吉田 元気", "よしだ げんき", "boys", "2004.06.06", "高校3年", "奈良", []),
+        p("くにはる", "國本 陽斗", "くにもと はると", "boys", "2004.05.14", "高校3年", "神奈川", []),
+        p("はやと", "兼村 隼人", "かねむら はやと", "boys", "2004.09.13", "高校3年", "沖縄", []),
+        p("おおはる", "大木 遥翔", "おおき はると", "boys", "2004.04.10", "高校3年", "群馬", []),
+        p("ひょうせい", "永塚 彪聖", "ながつか ひょうせい", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "satsuki": [
+        p("ゆいな", "古川 結菜", "こがわ ゆいな", "girls", "2005.01.30", "高校3年", "大阪", []),
+        p("あきは", "大西 陽羽", "おおにし あきは", "girls", "2004.12.13", "高校3年", "石川", []),
+        p("もえ", "芳賀 萌", "はが もえ", "girls", "未公開", "高校2年", "未公開", []),
+        p("かれん", "森本 花恋", "もりもと かれん", "girls", "未公開", "高校2年", "未公開", []),
+        p("そら", "中野 蒼空", "なかの そら", "boys", "2004.04.08", "高校3年", "神奈川", []),
+        p("りんのすけ", "春山 凜乃介", "はるやま りんのすけ", "boys", "2004.05.13", "高校3年", "千葉", []),
+        p("とおま", "廣居 永真", "ひろい とおま", "boys", "2004.06.28", "高校3年", "兵庫", ["Instagram: to_ma_hiroi", "X: _eungho06"]),
+        p("かいと", "石田 海斗", "いしだ かいと", "boys", "未公開", "高校3年", "未公開", []),
+        p("はやと", "兼村 隼人", "かねむら はやと", "boys", "2004.09.13", "高校3年", "沖縄", [])
+      ],
+      "konatsu": [
+        p("おとは", "たぐち おとは", "たぐち おとは", "girls", "2004.12.15", "高校3年", "未公開", []),
+        p("じゅり", "三浦 寿莉", "みうら じゅり", "girls", "未公開", "高校3年", "未公開", []),
+        p("りさ", "坂本 里紗", "さかもと りさ", "girls", "未公開", "高校3年", "未公開", []),
+        p("まゆ", "高畑 麻優", "たかはた まゆ", "girls", "未公開", "高校2年", "未公開", []),
+        p("ゆいな", "古川 結菜", "こがわ ゆいな", "girls", "2005.01.30", "高校3年", "大阪", []),
+        p("ぜん", "内田 禅", "うちだ ぜん", "boys", "2004.05.11", "高校3年", "熊本", []),
+        p("ゆうじろう", "上野 裕次郎", "うえの ゆうじろう", "boys", "未公開", "高校3年", "未公開", []),
+        p("はる", "新井谷 悠", "あらいや はる", "boys", "2004.05.07", "高校3年", "神奈川", ["Instagram: araiyahalu", "X: halu_araiya", "TikTok: halu.0507"]),
+        p("おおはる", "大木 遥翔", "おおき はると", "boys", "2004.04.10", "高校3年", "群馬", []),
+        p("だいな", "松井 大奈", "まつい だいな", "boys", "2005.07.04", "高校2年", "埼玉", ["Instagram: akvysv", "X: Daina_matsui", "TikTok: daina._.0704"])
+      ],
+      "cebu-2022": [
+        p("あやね", "小柳 絢音", "こやなぎ あやね", "girls", "未公開", "高校3年", "未公開", []),
+        p("ルナ", "ルナ", "るな", "girls", "未公開", "高校2年", "未公開", []),
+        p("りこ", "北畑 梨子", "きたはた りこ", "girls", "未公開", "高校2年", "未公開", []),
+        p("あすか", "川野 明日香", "かわの あすか", "girls", "未公開", "高校1年", "未公開", []),
+        p("まな", "神代 麻那", "かみしろ まな", "boys", "未公開", "高校3年", "東京", []),
+        p("こたろう", "蓮池 虎太郎", "はすいけ こたろう", "boys", "未公開", "高校3年", "未公開", []),
+        p("ゆうぞお", "大平 優蔵", "おおひら ゆうぞお", "boys", "未公開", "高校2年", "未公開", []),
+        p("けいた", "香月 慶太", "かつき けいた", "boys", "未公開", "高校2年", "未公開", []),
+        p("だいな", "松井 大奈", "まつい だいな", "boys", "2005.07.04", "高校2年", "埼玉", ["Instagram: akvysv", "X: Daina_matsui", "TikTok: daina._.0704"])
+      ],
+      "phuket-2022": [
+        p("るな", "ルナ", "るな", "girls", "未公開", "高校2年", "未公開", []),
+        p("まゆ", "高畑 麻優", "たかはた まゆ", "girls", "未公開", "高校2年", "未公開", []),
+        p("きさき", "寺島 季咲", "てらしま きさき", "girls", "2006.09.20", "高校1年", "東京", ["Instagram: kisaki_920", "X: kisaki_0920", "TikTok: kisaki_920"]),
+        p("ゆい", "ゆい", "ゆい", "girls", "未公開", "高校2年", "未公開", []),
+        p("あすか", "川野 明日香", "かわの あすか", "girls", "未公開", "高校1年", "未公開", []),
+        p("ゆう", "ゆう", "ゆう", "girls", "未公開", "高校2年", "未公開", []),
+        p("そら", "中野 蒼空", "なかの そら", "boys", "2004.04.08", "高校3年", "神奈川", []),
+        p("はる", "新井谷 悠", "あらいや はる", "boys", "2004.05.07", "高校3年", "神奈川", ["Instagram: araiyahalu", "X: halu_araiya", "TikTok: halu.0507"]),
+        p("だいな", "松井 大奈", "まつい だいな", "boys", "2005.07.04", "高校2年", "埼玉", ["Instagram: akvysv", "X: Daina_matsui", "TikTok: daina._.0704"]),
+        p("しょう", "髙橋 翔", "たかはし しょう", "boys", "2006.09.26", "高校1年", "東京", ["Instagram: shou__tak", "TikTok: shou__takahashi"]),
+        p("れん", "前川 廉", "まえかわ れん", "boys", "2005.02.11", "高校3年", "兵庫", ["Instagram: __05.ren_xx", "X: __05_ren_xx", "TikTok: ren_xx6"])
+      ],
+      "okinawa-2022": [
+        p("きさき", "寺島 季咲", "てらしま きさき", "girls", "2006.09.20", "高校1年", "東京", ["Instagram: kisaki_920", "X: kisaki_0920", "TikTok: kisaki_920"]),
+        p("ゆきの", "千葉 雪乃", "ちば ゆきの", "girls", "2006.02.27", "高校2年", "北海道", ["Instagram: yukinonngram__", "X: yukino_chi", "TikTok: yukino.tik"]),
+        p("ひなこ", "森 日向子", "もり ひなこ", "girls", "2006.01.09", "高校2年", "大阪", ["Instagram: hinako_bp", "TikTok: hinakokokoko"]),
+        p("めい", "畑中 萌衣", "はたなか めい", "girls", "2004.11.28", "高校3年", "奈良", ["Instagram: 11mei_", "X: 11mei_", "TikTok: meei1128"]),
+        p("みう", "鈴木 みう", "すずき みう", "girls", "2005.11.04", "高校2年", "茨城", ["Instagram: miu_suzuki_", "TikTok: miu_suzuki_"]),
+        p("はる", "新井谷 悠", "あらいや はる", "boys", "2004.05.07", "高校3年", "神奈川", ["Instagram: araiyahalu", "X: halu_araiya", "TikTok: halu.0507"]),
+        p("しょう", "髙橋 翔", "たかはし しょう", "boys", "2006.09.26", "高校1年", "東京", ["Instagram: shou__tak", "TikTok: shou__takahashi"]),
+        p("せいや", "渋谷 誠也", "しぶたに せいや", "boys", "2004.10.04", "高校3年", "京都", ["Instagram: seiya_ss_1004", "X: seiya_ss_1004", "TikTok: seiya_ss_1004"]),
+        p("かいり", "外山 浬", "とやま かいり", "boys", "2007.01.26", "高校1年", "愛知", ["Instagram: kxaxixrxixx", "X: KxAxIxRxIxx", "TikTok: kxaxixrxixx"]),
+        p("れん", "前川 廉", "まえかわ れん", "boys", "2005.02.11", "高校3年", "兵庫", ["Instagram: __05.ren_xx", "X: __05_ren_xx", "TikTok: ren_xx6"])
+      ],
+      "danang": [
+        p("ゆのん", "中島 結音", "なかじま ゆのん", "girls", "2006.11.20", "高校1年", "広島", ["Instagram: yunon___1120", "X: tyan____yuno", "TikTok: yunon___1120"]),
+        p("ゆら", "新井 侑良", "あらい ゆら", "girls", "2005.10.23", "高校2年", "大阪", ["Instagram: ___yuragram", "X: araiyura", "TikTok: yurachandesu"]),
+        p("あいさ", "細川 愛沙", "ほそかわ あいさ", "girls", "2007.10.29", "高校1年", "千葉", ["Instagram: aaaisa.d.r.chihuahua", "X: aaaisa1029", "TikTok: aisa.1029"]),
+        p("ここな", "ここな", "ここな", "girls", "未公開", "高校2年", "未公開", []),
+        p("むつき", "姫乃 夢月", "ひめの むつき", "girls", "2004.06.27", "高校3年", "京都", ["Instagram: himeno211018", "X: himeno211018", "TikTok: himeno211018"]),
+        p("だいな", "松井 大奈", "まつい だいな", "boys", "2005.07.04", "高校2年", "埼玉", ["Instagram: akvysv", "X: Daina_matsui", "TikTok: daina._.0704"]),
+        p("たつや", "南平 達矢", "みなみひら たつや", "boys", "2004.10.27", "高校3年", "東京", ["Instagram: tatsuya.minamihira10", "X: Mina_Tatsu1027", "TikTok: 1027._ta"]),
+        p("ゆうが", "馬場 夕河", "ばんば ゆうが", "boys", "2004.06.07", "高校3年", "滋賀", ["Instagram: yugabamba0607", "X: yugabamba", "TikTok: yuuuuuugaaaa"]),
+        p("さんざ", "久保田 燦", "くぼた さんざ", "boys", "2004.08.26", "高校3年", "福井", ["Instagram: ku_sanza08", "X: ku_sanza08", "TikTok: ku_sanza08"]),
+        p("こうき", "髙橋 紅輝", "たかはし こうき", "boys", "2006.06.26", "高校1年", "北海道", ["Instagram: t_kouki0626", "TikTok: ko_ki.0626"])
+      ]
+    });
+
+    Object.assign(memberData, {
+      "akaiito": [
+        p("みく", "松尾 美紅", "まつお みく", "girls", "2003.10.14", "高校2年", "奈良", ["Instagram: mikurinn_14", "X: mikurinn_14", "TikTok: mikurinn_14"]),
+        p("あおい", "一之瀬 葵", "いちのせ あおい", "girls", "2003.04.25", "高校2年", "神奈川", ["Instagram: aoi_ichinose_", "X: aoi_ichinose__"]),
+        p("るか", "早河 ルカ", "はやかわ るか", "girls", "未公開", "高校2年", "未公開", ["Instagram: ru_4519"]),
+        p("るな", "黒咲 月", "くろさき るな", "girls", "未公開", "高校2年", "未公開", []),
+        p("いけはる", "池田 陽音", "いけだ はると", "boys", "2004.02.12", "高校2年", "東京", ["Instagram: haruto.212.8610", "X: haruto_212", "TikTok: haruto867"]),
+        p("はると", "中野 晴仁", "なかの はると", "boys", "未公開", "高校3年", "未公開", []),
+        p("りょうた", "流 稜太", "ながれ りょうた", "boys", "2002.10.11", "高校3年", "大阪", ["Instagram: nagare_ryota", "X: nagare_ryota", "TikTok: nagare_ryota"]),
+        p("いくと", "菅生 育利", "すごう いくと", "boys", "2004.01.08", "高校2年", "愛知", ["Instagram: ikuto_0108", "X: iku_to_to0108"]),
+        p("あきら", "林田 明良", "はやしだ あきら", "boys", "未公開", "高校2年", "未公開", [])
+      ],
+      "sotsugyo-2021": [
+        p("すずか", "石川 涼楓", "いしかわ すずか", "girls", "2002.05.10", "高校3年", "千葉", ["Instagram: suzuka__0510", "X: suzuka_0510_", "TikTok: suzuka510"]),
+        p("まり", "新塘 真理", "しんとう まり", "girls", "2005.01.21", "高校1年", "東京", ["Instagram: mari0121_", "X: mari0121_", "TikTok: mari_0121"]),
+        p("かのん", "比屋根 香音", "ひやね かのん", "girls", "未公開", "高校2年", "千葉", []),
+        p("あやの", "増田 彩乃", "ますだ あやの", "girls", "2003.05.26", "高校3年", "愛知", []),
+        p("なる", "山田 なる", "やまだ なる", "girls", "2003.11.05", "高校2年", "埼玉", []),
+        p("りょうた", "流 稜太", "ながれ りょうた", "boys", "2002.10.11", "高校3年", "大阪", ["Instagram: nagare_ryota", "X: nagare_ryota", "TikTok: nagare_ryota"]),
+        p("はると", "飯泉 遥斗", "いいずみ はると", "boys", "2002.06.27", "高校3年", "東京", ["Instagram: izuharu0627", "X: izuharu0627", "TikTok: izuharu0627"]),
+        p("けいし", "三島 啓史", "みしま けいし", "boys", "未公開", "高校2年", "未公開", []),
+        p("あきら", "林田 明良", "はやしだ あきら", "boys", "未公開", "高校2年", "未公開", []),
+        p("りおん", "畠山 理温", "はたけやま りおん", "boys", "未公開", "高校2年", "未公開", [])
+      ],
+      "sakura-2021": [
+        p("ひな", "大汐 姫菜", "おおしお ひな", "girls", "未公開", "高校2年", "未公開", []),
+        p("みゆ", "山崎 美優", "やまざき みゆ", "girls", "未公開", "高校2年", "東京", []),
+        p("マリサ", "マリサ", "まりさ", "girls", "未公開", "高校2年", "未公開", []),
+        p("みやび", "岩田 雅", "いわた みやび", "girls", "未公開", "高校2年", "未公開", []),
+        p("はるみ", "星野 晴海", "ほしの はるみ", "boys", "2004.08.06", "高校2年", "愛知", ["Instagram: harumi_choteishincho", "X: haruminmin04", "TikTok: harumi__nanoda.86"], "165cm"),
+        p("ゆうのすけ", "深堀 裕之賛", "ふかぼり ゆうのすけ", "boys", "未公開", "高校3年", "未公開", []),
+        p("りおん", "畠山 理温", "はたけやま りおん", "boys", "未公開", "高校2年", "未公開", []),
+        p("ひかる", "熊川 輝", "くまがわ ひかる", "boys", "未公開", "高校2年", "未公開", []),
+        p("けいし", "三島 啓史", "みしま けいし", "boys", "未公開", "高校2年", "未公開", [])
+      ],
+      "suzuran": [
+        p("まり", "新塘 真理", "しんとう まり", "girls", "2005.01.21", "高校2年", "東京", ["Instagram: mari0121_", "X: mari0121_", "TikTok: mari_0121"], "157cm"),
+        p("くるみ", "池 未来実", "いけ くるみ", "girls", "未公開", "高校2年", "大阪", []),
+        p("みるき", "雨宮 未苺", "あめみや みるき", "girls", "2005.09.02", "高校1年", "山梨", []),
+        p("あやの", "増田 彩乃", "ますだ あやの", "girls", "2003.05.26", "高校3年", "愛知", []),
+        p("あきら", "林田 明良", "はやしだ あきら", "boys", "未公開", "高校3年", "未公開", []),
+        p("ひろむ", "大西 大夢", "おおにし ひろむ", "boys", "未公開", "高校3年", "未公開", []),
+        p("はると", "飯泉 遥斗", "いいずみ はると", "boys", "2002.06.27", "高校3年", "東京", ["Instagram: izuharu0627", "X: izuharu0627", "TikTok: izuharu0627"]),
+        p("れい", "岡田 蓮", "おかだ れい", "boys", "未公開", "高校3年", "未公開", []),
+        p("いさ", "北本 要世", "きたもと いさ", "boys", "未公開", "高校2年", "未公開", [])
+      ],
+      "himawari": [
+        p("しいな", "柚来 しいな", "ゆずき しいな", "girls", "2003.10.21", "高校3年", "神奈川", ["Instagram: shiina_yuzuki", "X: shiina_yuzuki"]),
+        p("あやの", "増田 彩乃", "ますだ あやの", "girls", "2003.05.26", "高校3年", "愛知", []),
+        p("まほ", "真穂", "まほ", "girls", "未公開", "高校2年", "未公開", []),
+        p("もか", "大塚 萌香", "おおつか もか", "girls", "2005.05.17", "高校1年", "千葉", []),
+        p("ゆあ", "上ノ堀 結愛", "うえのほり ゆあ", "girls", "未公開", "高校2年", "大阪", []),
+        p("はるひと", "石川 悠人", "いしかわ はるひと", "boys", "2004.03.19", "高校3年", "大阪", ["Instagram: hitoharu_0319", "X: hitoharu_0319", "TikTok: hitoharu_0319"], "177cm"),
+        p("かいゆう", "千葉 海宙", "ちば かいゆう", "boys", "2004.02.19", "高校3年", "宮城", ["Instagram: umi_chu__", "X: umi_chu__"], "176cm"),
+        p("いくと", "菅生 育利", "すごう いくと", "boys", "2004.01.08", "高校3年", "愛知", ["Instagram: ikuto_0108", "X: iku_to_to0108"], "169cm"),
+        p("はるく", "高橋 晴空", "たかはし はるく", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "asagao": [
+        p("りょうか", "折田 涼夏", "おりた りょうか", "girls", "2004.07.20", "高校2年", "北海道", ["Instagram: ryoka_0720", "X: ryoka720", "TikTok: ryoka_720"]),
+        p("もか", "大塚 萌香", "おおつか もか", "girls", "2005.05.17", "高校1年", "千葉", []),
+        p("ゆあ", "上ノ堀 結愛", "うえのほり ゆあ", "girls", "未公開", "高校2年", "大阪", []),
+        p("れいな", "福田 怜奈", "ふくだ れいな", "girls", "未公開", "高校2年", "大阪", []),
+        p("さら", "くろがね さら", "くろがね さら", "girls", "2005.02.14", "高校2年", "千葉", []),
+        p("そら", "山崎 蒼空", "やまざき そら", "boys", "未公開", "高校3年", "未公開", []),
+        p("じん", "松本 仁", "まつもと じん", "boys", "未公開", "高校3年", "奈良", []),
+        p("まやと", "中里 真哉斗", "なかざと まやと", "boys", "2003.09.22", "高校3年", "千葉", []),
+        p("あさと", "小野 朝郷", "おの あさと", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "kosumosu": [
+        p("ゆな", "水戸 由菜", "みと ゆな", "girls", "2004.04.07", "高校2年", "神奈川", ["Instagram: yuna_mito", "TikTok: yuna_mito"]),
+        p("かのん", "吉田 佳音", "よしだ かのん", "girls", "未公開", "高校1年", "東京", []),
+        p("みみ", "黒沢 実未", "くろさわ みみ", "girls", "未公開", "高校2年", "埼玉", []),
+        p("もえ", "佐藤 もえ", "さとう もえ", "girls", "未公開", "高校3年", "北海道", []),
+        p("しいな", "柚来 しいな", "ゆずき しいな", "girls", "2003.10.21", "高校3年", "神奈川", ["Instagram: shiina_yuzuki", "X: shiina_yuzuki"]),
+        p("つばさ", "福村 飛翔", "ふくむら つばさ", "boys", "2003.09.12", "高校3年", "京都", ["Instagram: 3bebi", "X: 3bebii", "TikTok: 3bebii"]),
+        p("じょう", "平本 丈", "ひらもと じょう", "boys", "2003.07.22", "高校3年", "東京", []),
+        p("そら", "中野 蒼空", "なかの そら", "boys", "2004.04.08", "高校2年", "神奈川", []),
+        p("かいと", "下川 海斗", "しもかわ かいと", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "karin": [
+        p("ゆな", "水戸 由菜", "みと ゆな", "girls", "2004.04.07", "高校2年", "神奈川", ["Instagram: yuna_mito", "TikTok: yuna_mito"]),
+        p("しいな", "柚来 しいな", "ゆずき しいな", "girls", "2003.10.21", "高校3年", "神奈川", ["Instagram: shiina_yuzuki", "X: shiina_yuzuki"]),
+        p("れいな", "福田 怜奈", "ふくだ れいな", "girls", "未公開", "高校2年", "大阪", []),
+        p("もか", "大塚 萌香", "おおつか もか", "girls", "2005.05.17", "高校1年", "千葉", []),
+        p("もえ", "佐藤 もえ", "さとう もえ", "girls", "未公開", "高校3年", "北海道", []),
+        p("そら", "中野 蒼空", "なかの そら", "boys", "2004.04.08", "高校2年", "神奈川", []),
+        p("まやと", "中里 真哉斗", "なかざと まやと", "boys", "2003.09.22", "高校3年", "千葉", []),
+        p("れん", "岡田 蓮", "おかだ れん", "boys", "2003.04.16", "高校3年", "熊本", []),
+        p("ゆうと", "松本 優翔", "まつもと ゆうと", "boys", "未公開", "高校3年", "未公開", [])
+      ]
+    });
+
+    Object.assign(memberData, {
+      "sotsugyo-2020": [
+        p("ひろよし", "簡 宏嘉", "かん ひろよし", "boys", "未公開", "高校3年", "京都", []),
+        p("たける", "舟木 健", "ふなき たける", "boys", "2001.08.10", "高校3年", "北海道", []),
+        p("せな", "後藤 聖那", "ごとう せな", "boys", "2002.05.01", "高校2年", "神奈川", []),
+        p("りゅうた", "りゅうた", "りゅうた", "boys", "未公開", "高校3年", "未公開", []),
+        p("まる", "向葵 まる", "ひなた まる", "girls", "2003.04.29", "高校1年", "茨城", []),
+        p("ゆいな", "中野 ゆいな", "なかの ゆいな", "girls", "2002.01.25", "高校3年", "神奈川", []),
+        p("ももか", "小浜 桃奈", "こはま ももな", "girls", "2003.04.02", "高校1年", "東京", []),
+        p("りほ", "永江 梨乃", "ながえ りの", "girls", "2003.02.25", "高校2年", "福岡", []),
+        p("あかね", "西 綾乃", "にし あやの", "girls", "未公開", "高校3年", "未公開", [])
+      ],
+      "aoiharu": [
+        p("しゅん", "里吉 峻", "さとよし しゅん", "boys", "2002.04.18", "高校3年", "神奈川", []),
+        p("りの", "永江 梨乃", "ながえ りの", "girls", "2003.02.25", "高校3年", "福岡", []),
+        p("のん", "粕谷 音", "かすや のん", "girls", "2004.03.12", "高校2年", "北海道", []),
+        p("みなみ", "鵜川 もえか", "うかわ もえか", "girls", "未公開", "高校2年", "未公開", []),
+        p("りな", "川端 結愛", "かわばた ゆめ", "girls", "2004.04.14", "高校1年", "京都", []),
+        p("いぶき", "木村 伊吹", "きむら いぶき", "boys", "2003.08.08", "高校2年", "広島", []),
+        p("りき", "糸数 竜輝", "いとかず りき", "boys", "2003.10.31", "高校2年", "沖縄", []),
+        p("けいし", "三島 啓史", "みしま けいし", "boys", "未公開", "高校2年", "未公開", []),
+        p("まひろ", "前田 俊", "まえだ しゅん", "boys", "2002.05.24", "高校3年", "千葉", [])
+      ],
+      "ajisai": [
+        p("すずか", "石川 涼楓", "いしかわ すずか", "girls", "2002.05.10", "高校3年", "千葉", ["Instagram: suzuka__0510", "X: suzuka_0510_", "TikTok: suzuka510"]),
+        p("のん", "粕谷 音", "かすや のん", "girls", "2004.03.12", "高校2年", "北海道", []),
+        p("ふゆみ", "天野 冬海", "あまの ふゆみ", "girls", "未公開", "高校3年", "未公開", []),
+        p("るな", "黒咲 月", "くろさき るな", "girls", "未公開", "高校2年", "未公開", []),
+        p("りの", "永江 梨乃", "ながえ りの", "girls", "2003.02.25", "高校3年", "福岡", []),
+        p("りき", "糸数 竜輝", "いとかず りき", "boys", "2003.10.31", "高校2年", "沖縄", []),
+        p("いぶき", "木村 伊吹", "きむら いぶき", "boys", "2003.08.08", "高校2年", "広島", []),
+        p("きだい", "小林 希大", "こばやし きだい", "boys", "2002.07.29", "高校3年", "長野", []),
+        p("けいし", "三島 啓史", "みしま けいし", "boys", "未公開", "高校2年", "未公開", [])
+      ],
+      "natsuzora": [
+        p("すずか", "石川 涼楓", "いしかわ すずか", "girls", "2002.05.10", "高校3年", "千葉", ["Instagram: suzuka__0510", "X: suzuka_0510_", "TikTok: suzuka510"]),
+        p("ひな", "大塚 美波", "おおつか みなみ", "girls", "未公開", "高校2年", "神奈川", []),
+        p("みらい", "横田 未来", "よこだ みらい", "girls", "2002.09.08", "高校3年", "沖縄", []),
+        p("ゆずは", "雨宮 由乙花", "あめみや ゆずは", "girls", "2002.11.22", "高校3年", "山梨", []),
+        p("あやの", "増田 彩乃", "ますだ あやの", "girls", "2003.05.26", "高校2年", "愛知", []),
+        p("きだい", "小林 希大", "こばやし きだい", "boys", "2002.07.29", "高校3年", "長野", []),
+        p("ふうた", "酒寄 楓太", "さかより ふうた", "boys", "2004.11.04", "高校1年", "東京", []),
+        p("さとし", "熊谷 仁志", "くまがい さとし", "boys", "未公開", "高校3年", "東京", []),
+        p("まさと", "久保田 政人", "くぼた まさと", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "kinmokusei": [
+        p("あやの", "増田 彩乃", "ますだ あやの", "girls", "2003.05.26", "高校2年", "愛知", []),
+        p("るな", "黒咲 月", "くろさき るな", "girls", "未公開", "高校2年", "未公開", []),
+        p("みらい", "横田 未来", "よこだ みらい", "girls", "2002.09.08", "高校3年", "沖縄", []),
+        p("けいし", "三島 啓史", "みしま けいし", "boys", "未公開", "高校2年", "未公開", []),
+        p("りゅうが", "赤羽 流河", "あかばね りゅうが", "boys", "2002.08.29", "高校3年", "長野", []),
+        p("けんしん", "けんしん", "けんしん", "boys", "未公開", "高校3年", "未公開", []),
+        p("ひろむ", "大西 大夢", "おおにし ひろむ", "boys", "未公開", "高校2年", "未公開", []),
+        p("まり", "新塘 真理", "しんとう まり", "girls", "2005.01.21", "高校1年", "東京", ["Instagram: mari0121_", "X: mari0121_", "TikTok: mari_0121"]),
+        p("りの", "永江 梨乃", "ながえ りの", "girls", "2003.02.25", "高校3年", "福岡", [])
+      ],
+      "akizuki": [
+        p("あやの", "増田 彩乃", "ますだ あやの", "girls", "2003.05.26", "高校2年", "愛知", []),
+        p("みらい", "横田 未来", "よこだ みらい", "girls", "2002.09.08", "高校3年", "沖縄", []),
+        p("るな", "黒咲 月", "くろさき るな", "girls", "未公開", "高校2年", "未公開", []),
+        p("まり", "新塘 真理", "しんとう まり", "girls", "2005.01.21", "高校1年", "東京", ["Instagram: mari0121_", "X: mari0121_", "TikTok: mari_0121"]),
+        p("りの", "永江 梨乃", "ながえ りの", "girls", "2003.02.25", "高校3年", "福岡", []),
+        p("けいし", "三島 啓史", "みしま けいし", "boys", "未公開", "高校2年", "未公開", []),
+        p("りゅうが", "赤羽 流河", "あかばね りゅうが", "boys", "2002.08.29", "高校3年", "長野", []),
+        p("よしき", "椿 善稀", "つばき よしき", "boys", "未公開", "高校3年", "未公開", []),
+        p("ひろむ", "大西 大夢", "おおにし ひろむ", "boys", "未公開", "高校2年", "未公開", [])
+      ],
+      "hoshizora": [
+        p("るな", "黒咲 月", "くろさき るな", "girls", "未公開", "高校2年", "未公開", []),
+        p("るか", "早河 ルカ", "はやかわ るか", "girls", "未公開", "高校2年", "未公開", ["Instagram: ru_4519"]),
+        p("みく", "松尾 美紅", "まつお みく", "girls", "2003.10.14", "高校2年", "奈良", ["Instagram: mikurinn_14", "X: mikurinn_14", "TikTok: mikurinn_14"]),
+        p("あおい", "一之瀬 葵", "いちのせ あおい", "girls", "2003.04.25", "高校2年", "神奈川", ["Instagram: aoi_ichinose_", "X: aoi_ichinose__"]),
+        p("りの", "永江 梨乃", "ながえ りの", "girls", "2003.02.25", "高校3年", "福岡", []),
+        p("りょうた", "流 稜太", "ながれ りょうた", "boys", "2002.10.11", "高校3年", "大阪", ["Instagram: nagare_ryota", "X: nagare_ryota", "TikTok: nagare_ryota"]),
+        p("いけはる", "池田 陽音", "いけだ はると", "boys", "2004.02.12", "高校2年", "東京", ["Instagram: haruto.212.8610", "X: haruto_212", "TikTok: haruto867"]),
+        p("はると", "中野 晴仁", "なかの はると", "boys", "未公開", "高校3年", "未公開", []),
+        p("いくと", "菅生 育利", "すごう いくと", "boys", "2004.01.08", "高校2年", "愛知", ["Instagram: ikuto_0108", "X: iku_to_to0108"])
+      ]
+    });
+
+    Object.assign(memberData, {
+      "hawaii-2019": [
+        p("のあ", "鉄篦 啞", "くろがね のあ", "boys", "2002.03.14", "高校3年", "千葉", []),
+        p("ともや", "飯沼 智也", "いいぬま ともや", "boys", "未公開", "高校3年", "未公開", []),
+        p("いっせい", "森長 一誠", "もりなが いっせい", "boys", "2001.08.11", "高校3年", "静岡", []),
+        p("しゅん", "前田 俊", "まえだ しゅん", "boys", "2002.05.24", "高校2年", "千葉", []),
+        p("のあ", "倉田 乃彩", "くらた のあ", "girls", "2001.09.19", "高校3年", "長野", []),
+        p("あやみん", "福山 絢水", "ふくやま あやみ", "girls", "2002.11.02", "高校2年", "熊本", []),
+        p("ノノ", "Nono", "のの", "girls", "未公開", "高校3年", "未公開", []),
+        p("まや", "重川 茉弥", "しげかわ まや", "girls", "2004.01.24", "高校1年", "大阪", []),
+        p("りったろ", "仲本 莉絵瑠", "なかもと りえる", "girls", "2001.07.05", "高校3年", "神奈川", [])
+      ],
+      "hongkong-disney": [
+        p("のあ", "鉄篦 啞", "くろがね のあ", "boys", "2002.03.14", "高校3年", "千葉", []),
+        p("ひゅうが", "石部 陽向", "いしべ ひゅうが", "boys", "未公開", "高校3年", "未公開", []),
+        p("しゅん", "前田 俊", "まえだ しゅん", "boys", "2002.05.24", "高校2年", "千葉", []),
+        p("かずき", "吉開 一生", "よしかい かずき", "boys", "未公開", "高校3年", "未公開", []),
+        p("まや", "重川 茉弥", "しげかわ まや", "girls", "2004.01.24", "高校1年", "大阪", []),
+        p("まりん", "中村 真凜", "なかむら まりん", "girls", "未公開", "高校3年", "未公開", []),
+        p("のあ", "倉田 乃彩", "くらた のあ", "girls", "2001.09.19", "高校3年", "長野", []),
+        p("ゆいな", "中野 ゆいな", "なかの ゆいな", "girls", "2002.01.25", "高校3年", "神奈川", []),
+        p("はるか", "新井 遥", "あらい はるか", "girls", "2000.07.31", "高校3年", "東京", [])
+      ],
+      "jeju": [
+        p("けい", "けい", "けい", "boys", "未公開", "高校3年", "未公開", []),
+        p("のあ", "鉄篦 啞", "くろがね のあ", "boys", "2002.03.14", "高校3年", "千葉", []),
+        p("くうた", "くうた", "くうた", "boys", "未公開", "高校3年", "未公開", []),
+        p("ひろよし", "簡 宏嘉", "かん ひろよし", "boys", "未公開", "高校3年", "京都", []),
+        p("ゆうと", "ゆうと", "ゆうと", "boys", "未公開", "高校3年", "未公開", []),
+        p("あいり", "あいり", "あいり", "girls", "未公開", "高校3年", "未公開", []),
+        p("かの", "高橋 香乃", "たかはし かの", "girls", "2001.08.25", "高校3年", "東京", []),
+        p("ゆずは", "雨宮 由乙花", "あめみや ゆずは", "girls", "2002.11.22", "高校2年", "山梨", []),
+        p("ゆみ", "ゆみ", "ゆみ", "girls", "未公開", "高校3年", "未公開", []),
+        p("あやみ", "福山 絢水", "ふくやま あやみ", "girls", "2002.11.02", "高校2年", "熊本", [])
+      ],
+      "natsuyasumi-2019": [
+        p("のあ", "鉄篦 啞", "くろがね のあ", "boys", "2002.03.14", "高校3年", "千葉", []),
+        p("ひろよし", "簡 宏嘉", "かん ひろよし", "boys", "未公開", "高校3年", "京都", []),
+        p("ゆうと", "ゆうと", "ゆうと", "boys", "未公開", "高校3年", "未公開", []),
+        p("そうた", "そうた", "そうた", "boys", "未公開", "高校3年", "未公開", []),
+        p("ゆずは", "雨宮 由乙花", "あめみや ゆずは", "girls", "2002.11.22", "高校2年", "山梨", []),
+        p("きらら", "明空 星", "みよく きらら", "girls", "2001.05.01", "高校3年", "大阪", []),
+        p("かの", "高橋 香乃", "たかはし かの", "girls", "2001.08.25", "高校3年", "東京", []),
+        p("ゆうか", "ゆうか", "ゆうか", "girls", "未公開", "高校3年", "未公開", []),
+        p("ひめか", "上水口 姫香", "かみなぐち ひめか", "girls", "2002.05.27", "高校2年", "東京", [])
+      ],
+      "seoul-2019": [
+        p("ひろよし", "簡 宏嘉", "かん ひろよし", "boys", "未公開", "高校3年", "京都", []),
+        p("そうた", "そうた", "そうた", "boys", "未公開", "高校3年", "未公開", []),
+        p("しゅう", "しゅう", "しゅう", "boys", "未公開", "高校3年", "未公開", []),
+        p("りゅうた", "りゅうた", "りゅうた", "boys", "未公開", "高校3年", "未公開", []),
+        p("ゆずは", "雨宮 由乙花", "あめみや ゆずは", "girls", "2002.11.22", "高校2年", "山梨", []),
+        p("かの", "高橋 香乃", "たかはし かの", "girls", "2001.08.25", "高校3年", "東京", []),
+        p("きらら", "明空 星", "みよく きらら", "girls", "2001.05.01", "高校3年", "大阪", []),
+        p("ゆいな", "中野 ゆいな", "なかの ゆいな", "girls", "2002.01.25", "高校3年", "神奈川", []),
+        p("ひめか", "上水口 姫香", "かみなぐち ひめか", "girls", "2002.05.27", "高校2年", "東京", []),
+        p("れいな", "れいな", "れいな", "girls", "未公開", "高校3年", "未公開", [])
+      ],
+      "taiwan-2019": [
+        p("いっせい", "森長 一誠", "もりなが いっせい", "boys", "2001.08.11", "高校3年", "静岡", []),
+        p("まひろ", "前田 俊", "まえだ しゅん", "boys", "2002.05.24", "高校2年", "千葉", []),
+        p("かいき", "かいき", "かいき", "boys", "未公開", "高校3年", "未公開", []),
+        p("りゅうた", "りゅうた", "りゅうた", "boys", "未公開", "高校3年", "未公開", []),
+        p("ゆずは", "雨宮 由乙花", "あめみや ゆずは", "girls", "2002.11.22", "高校2年", "山梨", []),
+        p("ひめか", "上水口 姫香", "かみなぐち ひめか", "girls", "2002.05.27", "高校2年", "東京", []),
+        p("きらら", "明空 星", "みよく きらら", "girls", "2001.05.01", "高校3年", "大阪", []),
+        p("ゆいな", "中野 ゆいな", "なかの ゆいな", "girls", "2002.01.25", "高校3年", "神奈川", []),
+        p("ももな", "小浜 桃奈", "こはま ももな", "girls", "2003.04.02", "高校1年", "東京", [])
+      ],
+      "guam-2019": [
+        p("せな", "後藤 聖那", "ごとう せな", "boys", "2002.05.01", "高校2年", "神奈川", []),
+        p("かいき", "かいき", "かいき", "boys", "未公開", "高校3年", "未公開", []),
+        p("たける", "舟木 健", "ふなき たける", "boys", "2001.08.10", "高校3年", "北海道", []),
+        p("さとし", "熊谷 仁志", "くまがい さとし", "boys", "未公開", "高校2年", "東京", []),
+        p("ゆずは", "雨宮 由乙花", "あめみや ゆずは", "girls", "2002.11.22", "高校2年", "山梨", []),
+        p("ひめか", "上水口 姫香", "かみなぐち ひめか", "girls", "2002.05.27", "高校2年", "東京", []),
+        p("ももな", "小浜 桃奈", "こはま ももな", "girls", "2003.04.02", "高校1年", "東京", []),
+        p("まる", "向葵 まる", "ひなた まる", "girls", "2003.04.29", "高校1年", "茨城", []),
+        p("りの", "永江 梨乃", "ながえ りの", "girls", "2003.02.25", "高校2年", "福岡", [])
+      ],
+      "fuyuyasumi-2019": [
+        p("せな", "後藤 聖那", "ごとう せな", "boys", "2002.05.01", "高校2年", "神奈川", []),
+        p("たける", "舟木 健", "ふなき たける", "boys", "2001.08.10", "高校3年", "北海道", []),
+        p("かいき", "かいき", "かいき", "boys", "未公開", "高校3年", "未公開", []),
+        p("さとし", "熊谷 仁志", "くまがい さとし", "boys", "未公開", "高校2年", "東京", []),
+        p("まる", "向葵 まる", "ひなた まる", "girls", "2003.04.29", "高校1年", "茨城", []),
+        p("ゆずは", "雨宮 由乙花", "あめみや ゆずは", "girls", "2002.11.22", "高校2年", "山梨", []),
+        p("ひめか", "上水口 姫香", "かみなぐち ひめか", "girls", "2002.05.27", "高校2年", "東京", []),
+        p("りの", "永江 梨乃", "ながえ りの", "girls", "2003.02.25", "高校2年", "福岡", []),
+        p("ももな", "小浜 桃奈", "こはま ももな", "girls", "2003.04.02", "高校1年", "東京", [])
+      ]
+    });
+
+    Object.assign(memberData, {
+      "guam-2018": [
+        p("りゅうのすけ", "高橋 龍之介", "たかはし りゅうのすけ", "boys", "未公開", "高校3年", "未公開", []),
+        p("けんと", "ケント", "けんと", "boys", "未公開", "高校3年", "サイパン", []),
+        p("かずき", "吉開 一生", "よしかい かずき", "boys", "未公開", "高校3年", "未公開", []),
+        p("りゅうた", "奥田 琉太", "おくだ りゅうた", "boys", "未公開", "高校3年", "未公開", []),
+        p("あやか", "あやか", "あやか", "girls", "未公開", "高校3年", "グアム", []),
+        p("まはる", "前田 まはる", "まえだ まはる", "girls", "未公開", "高校3年", "千葉", []),
+        p("ありさ", "坂巻 有紗", "さかまき ありさ", "girls", "未公開", "高校3年", "埼玉", []),
+        p("りったろ", "仲本 莉絵瑠", "なかもと りえる", "girls", "2001.07.05", "高校2年", "神奈川", []),
+        p("まなまな", "仲本 愛美", "なかもと まなみ", "girls", "2001.12.26", "高校2年", "広島", [])
+      ],
+      "danang-2018": [
+        p("りゅうた", "奥田 琉太", "おくだ りゅうた", "boys", "未公開", "高校3年", "未公開", []),
+        p("かずき", "吉開 一生", "よしかい かずき", "boys", "未公開", "高校3年", "未公開", []),
+        p("ひかる", "山口 光", "やまぐち ひかる", "boys", "未公開", "高校3年", "大阪", []),
+        p("はる", "山平 晴琉", "やまひら はる", "boys", "未公開", "高校2年", "未公開", []),
+        p("まはる", "前田 まはる", "まえだ まはる", "girls", "未公開", "高校3年", "千葉", []),
+        p("ありさ", "坂巻 有紗", "さかまき ありさ", "girls", "未公開", "高校3年", "埼玉", []),
+        p("なつき", "野城 菜月", "やしろ なつき", "girls", "2000.07.19", "高校3年", "千葉", []),
+        p("みゆう", "小高 実優", "おだか みゆう", "girls", "未公開", "高校2年", "未公開", []),
+        p("まなか", "山本 真花", "やまもと まなか", "girls", "未公開", "高校2年", "未公開", [])
+      ],
+      "busan-2018": [
+        p("ありさ", "坂巻 有紗", "さかまき ありさ", "girls", "未公開", "高校3年", "埼玉", []),
+        p("みゆう", "小高 実優", "おだか みゆう", "girls", "未公開", "高校2年", "未公開", []),
+        p("まなか", "山本 真花", "やまもと まなか", "girls", "未公開", "高校2年", "未公開", []),
+        p("なつき", "野城 菜月", "やしろ なつき", "girls", "2000.07.19", "高校3年", "千葉", []),
+        p("まはる", "前田 まはる", "まえだ まはる", "girls", "未公開", "高校3年", "千葉", []),
+        p("ひかる", "山口 光", "やまぐち ひかる", "boys", "未公開", "高校3年", "大阪", []),
+        p("かいと", "石岡 快斗", "いしおか かいと", "boys", "未公開", "高校3年", "未公開", []),
+        p("はる", "山平 晴琉", "やまひら はる", "boys", "未公開", "高校2年", "未公開", []),
+        p("かずき", "吉開 一生", "よしかい かずき", "boys", "未公開", "高校3年", "未公開", []),
+        p("りゅうた", "奥田 琉太", "おくだ りゅうた", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "australia-2018": [
+        p("せいら", "菊池 聖羅", "きくち せいら", "girls", "未公開", "高校3年", "未公開", []),
+        p("ここな", "山本 瑚々南", "やまもと ここな", "girls", "未公開", "高校2年", "未公開", []),
+        p("ゆりな", "山本 祐里奈", "やまもと ゆりな", "girls", "未公開", "高校3年", "未公開", []),
+        p("もか", "moca", "もか", "girls", "2001.02.13", "高校3年", "大阪", []),
+        p("なつき", "野城 菜月", "やしろ なつき", "girls", "2000.07.19", "高校3年", "千葉", []),
+        p("りーくん", "下河 亮汰", "しもかわ りょうた", "boys", "未公開", "高校3年", "未公開", []),
+        p("ゆとち", "古江 侑豊", "ふるえ ゆうと", "boys", "未公開", "高校3年", "未公開", []),
+        p("しゅん", "前田 俊", "まえだ しゅん", "boys", "2002.05.24", "高校2年", "千葉", []),
+        p("しょうま", "小室 翔真", "こむろ しょうま", "boys", "未公開", "高校3年", "未公開", [])
+      ],
+      "revenge-2018": [
+        p("りのちぃ", "市川 莉乃", "いちかわ りの", "girls", "未公開", "高校3年", "未公開", []),
+        p("ツッキー", "田村 月光", "たむら つきひ", "girls", "未公開", "高校3年", "未公開", []),
+        p("まなまな", "仲本 愛美", "なかもと まなみ", "girls", "2001.12.26", "高校2年", "広島", []),
+        p("りゅうた", "奥田 琉太", "おくだ りゅうた", "boys", "未公開", "高校3年", "未公開", []),
+        p("かずき", "吉開 一生", "よしかい かずき", "boys", "未公開", "高校3年", "未公開", []),
+        p("ひかる", "山口 光", "やまぐち ひかる", "boys", "未公開", "高校3年", "大阪", []),
+        p("はる", "山平 晴琉", "やまひら はる", "boys", "未公開", "高校2年", "未公開", []),
+        p("しゅん", "前田 俊", "まえだ しゅん", "boys", "2002.05.24", "高校2年", "千葉", [])
+      ]
+    });
+
+    Object.assign(memberData, {
+      "season-1-2017": [
+        p("りょうたろう", "西村 涼太郎", "にしむら りょうたろう", "boys", "未公開", "高校生", "未公開", []),
+        p("ブライト", "小林 ブライト", "こばやし ぶらいと", "boys", "未公開", "高校生", "未公開", []),
+        p("おだけい", "䋝田 圭亮", "おだけいすけ", "boys", "2000.11.20", "高校生", "鳥取", []),
+        p("ダーウィン", "デラクルス・ダーウィン", "でらくるす だーうぃん", "boys", "未公開", "高校生", "未公開", []),
+        p("ひな", "光咲 ひな", "こうさき ひな", "girls", "未公開", "17歳", "未公開", []),
+        p("なつき", "阿部 なつき", "あべ なつき", "girls", "1999.10.06", "17歳", "東京", []),
+        p("メリー", "カラカス・メリー", "からかす めりー", "girls", "未公開", "17歳", "未公開", []),
+        p("ユリア", "鈴木 優吏愛", "すずき ゆりあ", "girls", "未公開", "17歳", "未公開", []),
+        p("ちゃろ", "脇谷 日南", "わきや ひな", "girls", "未公開", "17歳", "未公開", []),
+        p("ラム", "増渕 来夢", "ますぶち らむ", "girls", "未公開", "16歳", "未公開", [])
+      ],
+      "season-2-2017": [
+        p("りお", "高橋 里央", "たかはし りお", "boys", "未公開", "高校生", "未公開", []),
+        p("よっしー", "吉河 颯人", "よしかわ はやと", "boys", "未公開", "高校生", "未公開", []),
+        p("たくみ", "萩原 匠", "はぎわら たくみ", "boys", "未公開", "高校生", "未公開", []),
+        p("はやてぃん", "藤田 颯", "ふじた はやて", "boys", "未公開", "高校生", "未公開", []),
+        p("ひな", "吉川 陽多", "よしかわ ひな", "girls", "未公開", "高校生", "未公開", []),
+        p("るい", "るい", "るい", "girls", "未公開", "高校生", "未公開", []),
+        p("さや", "さや", "さや", "girls", "未公開", "高校生", "未公開", []),
+        p("アンジー", "アンジェラ チューバック", "あんじぇら ちゅーばっく", "girls", "2000.09.23", "高校生", "東京", [])
+      ],
+      "season-3-2017": [
+        p("ケンくん", "松藤 健介", "まつふじ けんすけ", "boys", "2000.06.18", "高校2年", "京都", ["Instagram: taeken3.9", "X: ken_0_6_1_8"]),
+        p("リュウくん", "高橋 龍之介", "たかはし りゅうのすけ", "boys", "2000.08.30", "高校2年", "未公開", []),
+        p("のぶり", "比嘉 延理", "ひが のぶり", "boys", "未公開", "高校生", "未公開", []),
+        p("まっぴー", "前田 まはる", "まえだ まはる", "girls", "未公開", "高校生", "千葉", []),
+        p("なぎさ", "早川 渚紗", "はやかわ なぎさ", "girls", "2000.07.16", "高校2年", "千葉", []),
+        p("ひかる", "浦西 ひかる", "うらにし ひかる", "girls", "2000.09.10", "高校2年", "大阪", []),
+        p("まなまな", "仲本 愛美", "なかもと まなみ", "girls", "2001.12.26", "高校1年", "広島", []),
+        p("れーな", "れーな", "れーな", "girls", "未公開", "高校生", "未公開", [])
+      ]
+    });
+
     const seasonVisuals = {
       "sotsugyo-2026": {
         src: "https://image.p-c2-x.abema-tv.com/lp/assets/cb6f77e60ab04510bca50936e9549c94/00-0000_kyousuki_sotsugyo26_Yoko.png",
@@ -675,8 +1462,16 @@
       }
     };
 
-    let selectedYear = 2026;
-    let selectedSeason = "sotsugyo-2026";
+    let selectedYear = null;
+    let selectedSeason = "";
+    const initialHeroImage = "data:image/png;base64,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";
+    const hero = document.querySelector(".hero");
+    const heroLogo = document.querySelector("#heroLogo");
+    const heroEyebrow = document.querySelector("#heroEyebrow");
+    const heroTitle = document.querySelector("#heroTitle");
+    const totalCount = document.querySelector("#totalCount");
+    const boysCount = document.querySelector("#boysCount");
+    const girlsCount = document.querySelector("#girlsCount");
     const yearButtonsRoot = document.querySelector("#yearButtons");
     const yearSummary = document.querySelector("#yearSummary");
     const seasonButtonsRoot = document.querySelector("#seasonButtons");
@@ -685,9 +1480,14 @@
     const seasonVisualImage = document.querySelector("#seasonVisualImage");
     const seasonVisualCaption = document.querySelector("#seasonVisualCaption");
     const membersRoot = document.querySelector("#members");
+    const searchForm = document.querySelector(".toolbar");
     const searchInput = document.querySelector("#search");
     const genderInput = document.querySelector("#gender");
     const prefectureInput = document.querySelector("#prefecture");
+    const clearFiltersButton = document.querySelector("#clearFilters");
+    const resultCount = document.querySelector("#resultCount");
+    const filterSummary = document.querySelector("#filterSummary");
+    const emptyState = document.querySelector("#emptyState");
 
     function createCard(member) {
       const article = document.createElement("article");
@@ -711,11 +1511,42 @@
             <div><span>身長</span><strong>${member.height}</strong></div>
             <div><span>出身地</span><strong>${member.prefecture}</strong></div>
           </div>
-          <div class="sns">${member.sns.map((item) => `<span>${item}</span>`).join("")}</div>
+          <div class="sns">${member.sns.length ? member.sns.map((item) => `<span>${item}</span>`).join("") : "<span>SNS未公開</span>"}</div>
         </div>
       `;
 
       return article;
+    }
+
+    function getCurrentMembers() {
+      return memberData[selectedSeason] || [];
+    }
+
+    function updateHero(season, members) {
+      const boys = members.filter((member) => member.gender === "boys").length;
+      const girls = members.filter((member) => member.gender === "girls").length;
+      heroEyebrow.textContent = `今日、好きになりました。${season.label}`;
+      heroTitle.textContent = `${season.label}のプロフィール一覧`;
+      totalCount.textContent = members.length;
+      boysCount.textContent = boys;
+      girlsCount.textContent = girls;
+    }
+
+    function updatePrefectureOptions(members) {
+      const currentValue = prefectureInput.value;
+      const prefectures = [...new Set(members.map((member) => member.prefecture))]
+        .filter((prefecture) => prefecture && prefecture !== "未公開")
+        .sort((a, b) => a.localeCompare(b, "ja"));
+
+      prefectureInput.innerHTML = '<option value="">すべての出身地</option>';
+      prefectures.forEach((prefecture) => {
+        const option = document.createElement("option");
+        option.value = prefecture;
+        option.textContent = prefecture;
+        prefectureInput.appendChild(option);
+      });
+
+      prefectureInput.value = prefectures.includes(currentValue) ? currentValue : "";
     }
 
     function renderYearButtons() {
@@ -754,19 +1585,50 @@
       });
     }
 
+    function renderInitialState() {
+      const allMembers = Object.values(memberData).flat();
+      heroLogo.src = initialHeroImage;
+      heroEyebrow.textContent = "今日、好きになりました。プロフィールアーカイブ";
+      heroTitle.textContent = "年度を選んでプロフィールを見る";
+      totalCount.textContent = allMembers.length;
+      boysCount.textContent = allMembers.filter((member) => member.gender === "boys").length;
+      girlsCount.textContent = allMembers.filter((member) => member.gender === "girls").length;
+      yearSummary.textContent = "見たい年度を選択してください。";
+      seasonSummary.textContent = "年度を選ぶと、その年の編が表示されます。";
+      seasonButtonsRoot.innerHTML = "";
+      membersRoot.innerHTML = '<p class="note">年度を選ぶとメンバー一覧が表示されます。</p>';
+      resultCount.textContent = "年度を選択してください";
+      filterSummary.textContent = "未選択";
+      emptyState.classList.add("hidden");
+      seasonVisual.classList.add("hidden");
+      updatePrefectureOptions([]);
+      renderYearButtons();
+    }
+
     function render() {
+      if (!selectedYear) {
+        renderInitialState();
+        return;
+      }
+
+      heroLogo.src = initialHeroImage;
       const currentSeasons = seasons[selectedYear] || [];
       const year = years.find((item) => item.year === selectedYear);
       const season = currentSeasons.find((item) => item.id === selectedSeason) || currentSeasons[0];
-      const members = memberData[selectedSeason] || [];
+      const members = getCurrentMembers();
       membersRoot.innerHTML = "";
       yearSummary.textContent = `${year.label}: ${year.description}`;
       seasonSummary.textContent = `${season.label}: ${season.description}`;
+      updateHero(season, members);
+      updatePrefectureOptions(members);
       renderSeasonVisual();
       renderYearButtons();
       renderSeasonButtons();
       if (members.length === 0) {
         membersRoot.innerHTML = '<p class="note">この編のプロフィールはまだ追加されていません。</p>';
+        resultCount.textContent = "0件を表示中";
+        filterSummary.textContent = "プロフィール追加待ち";
+        emptyState.classList.add("hidden");
         return;
       }
       members.forEach((member) => membersRoot.appendChild(createCard(member)));
@@ -788,17 +1650,42 @@
       const keyword = searchInput.value.trim().toLowerCase();
       const gender = genderInput.value;
       const prefecture = prefectureInput.value;
+      let visibleCount = 0;
 
       document.querySelectorAll(".card").forEach((card) => {
         const matchesKeyword = !keyword || card.dataset.search.includes(keyword);
         const matchesGender = !gender || card.dataset.gender === gender;
         const matchesPrefecture = !prefecture || card.dataset.prefecture === prefecture;
-        card.classList.toggle("hidden", !(matchesKeyword && matchesGender && matchesPrefecture));
+        const isVisible = matchesKeyword && matchesGender && matchesPrefecture;
+        card.classList.toggle("hidden", !isVisible);
+        visibleCount += isVisible ? 1 : 0;
       });
+
+      const genderLabel = genderInput.selectedOptions[0].textContent;
+      const prefectureLabel = prefectureInput.value || "すべての出身地";
+      const keywordLabel = keyword ? `検索: ${searchInput.value.trim()}` : "検索なし";
+      resultCount.textContent = `${visibleCount}件を表示中`;
+      filterSummary.textContent = `${genderLabel}・${prefectureLabel}・${keywordLabel}`;
+      emptyState.classList.toggle("hidden", visibleCount !== 0);
     }
 
     [searchInput, genderInput, prefectureInput].forEach((input) => {
       input.addEventListener("input", filterCards);
+    });
+
+    searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+    });
+
+    clearFiltersButton.addEventListener("click", () => {
+      searchInput.value = "";
+      genderInput.value = "";
+      prefectureInput.value = "";
+      if (!selectedYear) {
+        renderInitialState();
+        return;
+      }
+      filterCards();
     });
 
     render();
