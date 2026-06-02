@@ -1429,6 +1429,46 @@
         src: "https://image.p-c2-x.abema-tv.com/lp/assets/bb284de57acc4f08a20b5f1d7f727ccf/00-0000_kyousuki_rayong_Yoko_none.png",
         alt: "ラヨーン編のキービジュアル",
         caption: "ラヨーン編 キービジュアル"
+      },
+      "sotsugyo-2025-seoul": {
+        src: "https://image.p-c2-x.abema-tv.com/lp/assets/ef31a1c201cb433b81e96226d7e10ffc/00-0000_kyousuki_sotsugyo2025_1_Yoko_bg.png",
+        alt: "卒業編2025 in ソウルのキービジュアル",
+        caption: "卒業編2025 in ソウル キービジュアル"
+      },
+      "sotsugyo-2025-singapore": {
+        src: "https://image.p-c2-x.abema-tv.com/lp/assets/e0f1ee41c1764bdc830447ebe4f15c14/00-0000_kyousuki_sotsugyo2025_2_Yoko%20%281%29.png",
+        alt: "卒業編2025 in シンガポールのキービジュアル",
+        caption: "卒業編2025 in シンガポール キービジュアル"
+      },
+      "newzealand": {
+        src: "https://image.p-c2-x.abema-tv.com/lp/assets/a1f5afe73b804d5698629cb5d036cd65/00-0000_kyousuki_newzealand_Yoko%20%281%29.png",
+        alt: "ニュージーランド編のキービジュアル",
+        caption: "ニュージーランド編 キービジュアル"
+      },
+      "mactan": {
+        src: "https://image.p-c2-x.abema-tv.com/lp/assets/79819934096c46929fbbec20594dde52/00-0000_kyousuki_mactan_Yoko.png",
+        alt: "マクタン編のキービジュアル",
+        caption: "マクタン編 キービジュアル"
+      },
+      "halong": {
+        src: "https://image.p-c2-x.abema-tv.com/lp/assets/1940410aa9eb4441be7ad3c436a7f044/%E3%83%8F%E3%83%AD%E3%83%B3%E7%B7%A8.jpg",
+        alt: "ハロン編のキービジュアル",
+        caption: "ハロン編 キービジュアル"
+      },
+      "natsuyasumi-2025": {
+        src: "https://image.p-c2-x.abema-tv.com/lp/assets/910cf398403e45238ab11bd496f69f81/%E4%BB%8A%E6%97%A5%E5%A5%BD%E3%81%8D%E5%A4%8F%E4%BC%91%E3%81%BF%E7%B7%A8.jpg",
+        alt: "夏休み編2025のキービジュアル",
+        caption: "夏休み編2025 キービジュアル"
+      },
+      "chuncheon": {
+        src: "https://image.p-c2-x.abema-tv.com/lp/assets/dd086eb2f48c47828fa7390dc950bbaa/00-0000_kyousuki_chuncheon_all_Yoko.png",
+        alt: "チュンチョン編のキービジュアル",
+        caption: "チュンチョン編 キービジュアル"
+      },
+      "chiangmai": {
+        src: "https://image.p-c2-x.abema-tv.com/lp/assets/d40eab4356614e9cbea9e2d9961edb91/00-0000_kyousuki_chiangmai_Yoko.png",
+        alt: "チェンマイ編のキービジュアル",
+        caption: "チェンマイ編 キービジュアル"
       }
     };
 
@@ -1495,7 +1535,7 @@
       article.className = "card";
       article.dataset.gender = member.gender;
       article.dataset.prefecture = member.prefecture;
-      article.dataset.search = `${member.nick} ${member.name} ${member.kana} ${member.prefecture} ${member.sns.join(" ")}`.toLowerCase();
+      article.dataset.search = normalizeSearchText(`${member.nick} ${member.name} ${member.kana} ${member.prefecture} ${member.sns.join(" ")}`);
 
       article.innerHTML = `
         <div class="portrait${memberPhoto ? " has-photo" : ""}">
@@ -1506,6 +1546,7 @@
         <div class="body">
           <h3 class="name">${member.name}<br><small>${member.kana}</small></h3>
           <div class="meta">
+            ${member.seasonLabel ? `<div><span>編</span><strong>${member.seasonLabel}</strong></div>` : ""}
             <div><span>生年月日</span><strong>${member.birthday}</strong></div>
             <div><span>年齢・学年</span><strong>${member.grade}</strong></div>
             <div><span>身長</span><strong>${member.height}</strong></div>
@@ -1518,8 +1559,26 @@
       return article;
     }
 
+    function normalizeSearchText(value) {
+      return toKatakana(value.toLowerCase()).replace(/[\s\u3000・ーｰ\-]+/g, "");
+    }
+
+    function toKatakana(value) {
+      return value.replace(/[\u3041-\u3096]/g, (char) => String.fromCharCode(char.charCodeAt(0) + 0x60));
+    }
+
     function getCurrentMembers() {
       return memberData[selectedSeason] || [];
+    }
+
+    function getAllMembers() {
+      return Object.entries(memberData).flatMap(([seasonId, members]) => {
+        const season = Object.values(seasons).flat().find((item) => item.id === seasonId);
+        return members.map((member) => ({
+          ...member,
+          seasonLabel: season?.label || "編未設定"
+        }));
+      });
     }
 
     function updateHero(season, members) {
@@ -1586,7 +1645,7 @@
     }
 
     function renderInitialState() {
-      const allMembers = Object.values(memberData).flat();
+      const allMembers = getAllMembers();
       heroLogo.src = initialHeroImage;
       heroEyebrow.textContent = "今日、好きになりました。プロフィールアーカイブ";
       heroTitle.textContent = "年度を選んでプロフィールを見る";
@@ -1596,13 +1655,15 @@
       yearSummary.textContent = "見たい年度を選択してください。";
       seasonSummary.textContent = "年度を選ぶと、その年の編が表示されます。";
       seasonButtonsRoot.innerHTML = "";
-      membersRoot.innerHTML = '<p class="note">年度を選ぶとメンバー一覧が表示されます。</p>';
-      resultCount.textContent = "年度を選択してください";
-      filterSummary.textContent = "未選択";
+      membersRoot.innerHTML = "";
+      allMembers.forEach((member) => membersRoot.appendChild(createCard(member)));
+      resultCount.textContent = `${allMembers.length}件を表示中`;
+      filterSummary.textContent = "全年度・全編";
       emptyState.classList.add("hidden");
       seasonVisual.classList.add("hidden");
-      updatePrefectureOptions([]);
+      updatePrefectureOptions(allMembers);
       renderYearButtons();
+      filterCards();
     }
 
     function render() {
@@ -1647,7 +1708,7 @@
     }
 
     function filterCards() {
-      const keyword = searchInput.value.trim().toLowerCase();
+      const keyword = normalizeSearchText(searchInput.value.trim());
       const gender = genderInput.value;
       const prefecture = prefectureInput.value;
       let visibleCount = 0;
@@ -1664,8 +1725,9 @@
       const genderLabel = genderInput.selectedOptions[0].textContent;
       const prefectureLabel = prefectureInput.value || "すべての出身地";
       const keywordLabel = keyword ? `検索: ${searchInput.value.trim()}` : "検索なし";
+      const scopeLabel = selectedYear ? "選択中の編" : "全年度・全編";
       resultCount.textContent = `${visibleCount}件を表示中`;
-      filterSummary.textContent = `${genderLabel}・${prefectureLabel}・${keywordLabel}`;
+      filterSummary.textContent = `${scopeLabel}・${genderLabel}・${prefectureLabel}・${keywordLabel}`;
       emptyState.classList.toggle("hidden", visibleCount !== 0);
     }
 
