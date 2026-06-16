@@ -37,13 +37,11 @@
     }
 
     .hero {
-      min-height: 72vh;
+      min-height: 46vh;
       display: grid;
       align-items: end;
       padding: 32px 20px 42px;
-      background:
-        linear-gradient(120deg, rgba(36, 28, 31, 0.66), rgba(232, 77, 117, 0.36)),
-        url("https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1800&q=80") center/cover;
+      background: linear-gradient(135deg, #e84d75, #ff7a59);
       color: #ffffff;
     }
 
@@ -65,7 +63,7 @@
     }
 
     .hero-logo {
-      display: block;
+      display: none;
       width: min(300px, 72vw);
       height: auto;
       margin: 0 0 20px;
@@ -484,7 +482,8 @@
       2026: [
         { id: "sotsugyo-2026", label: "卒業編2026", description: "卒業編2026のメンバーを掲載中です。" },
         { id: "christchurch", label: "クライストチャーチ編", description: "クライストチャーチ編のメンバーを掲載中です。" },
-        { id: "rayong", label: "ラヨーン編", description: "ラヨーン編のメンバーを掲載中です。" }
+        { id: "rayong", label: "ラヨーン編", description: "ラヨーン編のメンバーを掲載中です。" },
+        { id: "incheon", label: "インチョン編2026", description: "2026年の新シリーズ、インチョン編のメンバーを掲載中です。" }
       ],
       2025: [
         { id: "sotsugyo-2025-seoul", label: "卒業編2025 in ソウル", description: "卒業編2025 in ソウルのメンバーを掲載中です。" },
@@ -611,6 +610,11 @@
       { nick: "じゅな", name: "朝倉 樹菜", kana: "あさくら じゅな", gender: "girls", birthday: "2009.06.14", grade: "16歳 高校2年", height: "155cm", prefecture: "茨城", sns: ["Instagram: junachan_17", "X: junachan_17", "TikTok: 17.juna"] },
       { nick: "いろは", name: "椎名 彩晴", kana: "しいな いろは", gender: "girls", birthday: "2010.01.21", grade: "16歳 高校2年", height: "153cm", prefecture: "埼玉", sns: ["Instagram: iir0.hq", "X: iiro_hq", "TikTok: iiir0.hq"] },
       { nick: "ゆきな", name: "山本 雪菜", kana: "やまもと ゆきな", gender: "girls", birthday: "2008.12.05", grade: "17歳 高校3年", height: "154cm", prefecture: "大阪", sns: ["Instagram: yukina_vaz", "X: yukina_vaz", "TikTok: yukina_vaz"] }
+      ],
+      "incheon": [
+      { nick: "たまき", name: "今井 環希", kana: "いまい たまき", gender: "girls", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "るる", name: "小森 瑠々", kana: "こもり るる", gender: "girls", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] },
+      { nick: "せいたろう", name: "江口 惺大郎", kana: "えぐち せいたろう", gender: "boys", birthday: "未公開", grade: "未公開", height: "未公開", prefecture: "未公開", sns: [] }
       ],
       "newzealand": [
       { nick: "さわ", name: "紗和", kana: "さわ", gender: "girls", birthday: "2009.02.28", grade: "高校2年", height: "152cm", prefecture: "埼玉", sns: ["Instagram: 28_sawa", "X: 28_sawa_", "TikTok: 28_sawa"] },
@@ -1533,6 +1537,123 @@
         "おとは": "https://image.p-c2-x.abema-tv.com/lp/assets/f33923f0c07d4c138f7cbc4c72c0412f/260209_X_kyousuki_sotsugyo2026_profile02_otoha.jpg",
         "ゆあ": "https://image.p-c2-x.abema-tv.com/lp/assets/9ab205dbfda5436a837c1a8a9d40a306/X-0212-1802-6.jpg"
       },
+      "christchurch": {
+        "りお": "https://image.p-c2-x.abema-tv.com/lp/assets/d4b68e8f548a48cfb598f21a3093fb6e/X-0401-1801-1.png?fit=clip&fm=jpg&h=680&q=75&w=680",
+        "こたろう": "https://image.p-c2-x.abema-tv.com/lp/assets/e69a7611e75e404c9994f1820aac29ea/X-0401-1801-4.png?fit=clip&fm=jpg&h=680&q=75&w=680",
+        "とおま": "https://image.p-c2-x.abema-tv.com/lp/assets/65de4d1950d44e94a21facc9a2365746/X-0401-1801-5.png?fit=clip&fm=jpg&h=680&q=75&w=680",
+        "かいと": "https://image.p-c2-x.abema-tv.com/lp/assets/10d1251aa6024432a98603e4bf40fe2a/X-0401-1801-2.png?fit=clip&fm=jpg&h=680&q=75&w=680",
+        "ゆうま": "https://image.p-c2-x.abema-tv.com/lp/assets/e2509df9b71342f395ff6738a1d60380/X-0401-1801-3.png?fit=clip&fm=jpg&h=680&q=75&w=680",
+        "ゆあ": "https://image.p-c2-x.abema-tv.com/lp/assets/7fa261c0aa5a47e58e49575de18a9c77/X-0401-1800-1.png?fit=clip&fm=jpg&h=680&q=75&w=680",
+        "ゆうひ": "https://image.p-c2-x.abema-tv.com/lp/assets/b96b25c1f33143d7984109ae9ad52e0f/X-0401-1800-2.png?fit=clip&fm=jpg&h=680&q=75&w=680",
+        "とあ": "https://image.p-c2-x.abema-tv.com/lp/assets/4bb5e113ee3b468e9aa656a3c82f8829/X-0401-1800-3.png?fit=clip&fm=jpg&h=680&q=75&w=680",
+        "れな": "https://image.p-c2-x.abema-tv.com/lp/assets/8578a3fc7d2e4f558b024850a02dc68a/X-0401-1800-5.png?fit=clip&fm=jpg&h=680&q=75&w=680",
+        "はるめ": "https://image.p-c2-x.abema-tv.com/lp/assets/b5e59b97f25146d18d60c63ab0b313a2/X-0401-1800-4.png?fit=clip&fm=jpg&h=680&q=75&w=680"
+      },
+      "sotsugyo-2024-phuket": {
+        "るい": "https://image.p-c2-x.abema-tv.com/lp/assets/bc9f77a6c6df47998c58f41d50771fce/kyosuki_prf_boy_rui.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "そうた": "https://image.p-c2-x.abema-tv.com/lp/assets/63fa438024ff4a7f8fd066276f3dde82/kyosuki_prf_boy_sota.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "えいじ": "https://image.p-c2-x.abema-tv.com/lp/assets/f4837952d4c8415d9bc9c6f458e7541b/kyosuki_prf_boy_eji.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "だいすけ": "https://image.p-c2-x.abema-tv.com/lp/assets/a122fdec93f3403c8b222b0d9f781c0a/kyosuki_daisuke_0.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "みさき": "https://image.p-c2-x.abema-tv.com/lp/assets/ffa7ad726ca343bf8a32e495051c8fbe/kyosuki_prf_boy_misaki.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "ケイト": "https://image.p-c2-x.abema-tv.com/lp/assets/a0d8f71e2157482db89338e19a389c86/kyosuki_prf_boy_alex.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "そら": "https://image.p-c2-x.abema-tv.com/lp/assets/44fe2a5238fb4d5cbd541b279228a659/kyosuki_sora.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "きさき": "https://image.p-c2-x.abema-tv.com/lp/assets/7b63c706f4274e0288931c46249f6881/kyosuki_prf_girl_kisaki.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "みく": "https://image.p-c2-x.abema-tv.com/lp/assets/873a6a9797d746d29875ed9c328e2af3/kyosuki_prf_girl_miku.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "ゆう": "https://image.p-c2-x.abema-tv.com/lp/assets/ba2eef20ff9f40578d8e0596d6d7ea41/kyosuki_prf_girl_yu.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "ゆのん": "https://image.p-c2-x.abema-tv.com/lp/assets/3aaec05740d943528c5e3917fda6cbe3/kyosuki_prf_girl_yunon.png?w=680&h=680&fit=clip&q=75&fm=jpg"
+      },
+      "sotsugyo-2024-cebu": {
+        "えいじ": "https://image.p-c2-x.abema-tv.com/lp/assets/f4837952d4c8415d9bc9c6f458e7541b/kyosuki_prf_boy_eji.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "そうた": "https://image.p-c2-x.abema-tv.com/lp/assets/63fa438024ff4a7f8fd066276f3dde82/kyosuki_prf_boy_sota.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "りゅうじん": "https://image.p-c2-x.abema-tv.com/lp/assets/18bd9482b8c9415aae27295a6394d9e6/20240711_kyosuki_natsuyasumi2024_shokai-ryujin.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "そら": "https://image.p-c2-x.abema-tv.com/lp/assets/44fe2a5238fb4d5cbd541b279228a659/kyosuki_sora.png?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "きさき": "https://image.p-c2-x.abema-tv.com/lp/assets/7b63c706f4274e0288931c46249f6881/kyosuki_prf_girl_kisaki.png?w=680&h=680&fit=clip&q=75&fm=jpg"
+      },
+      "nhatrang": {
+        "いっさ": "https://image.p-c2-x.abema-tv.com/lp/assets/fd3e0c11dd6a4c82a60dadca5ca4aa75/240326_kyosuki_nhatrang_profile-issa2.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "けんたろう": "https://image.p-c2-x.abema-tv.com/lp/assets/48e4ef47d8f7414d859a537ffd299e4a/240326_kyosuki_nhatrang_profile-kentaro2.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "るい": "https://image.p-c2-x.abema-tv.com/lp/assets/749b17765f8b4d7fb600f716485f9024/240326_kyosuki_nhatrang_profile-rui2.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "たいよう": "https://image.p-c2-x.abema-tv.com/lp/assets/c94f879544d841cab00713972e73ddca/240326_kyosuki_nhatrang_profile-taiyo2.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "てる": "https://image.p-c2-x.abema-tv.com/lp/assets/caa93406135d4da88e94b3344bb6b387/240326_kyosuki_nhatrang_profile-teru2.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "エリカ": "https://image.p-c2-x.abema-tv.com/lp/assets/8b405dafa284497abb136de878bd9be9/240326_kyosuki_nhatrang_profile-erika2.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "みなつ": "https://image.p-c2-x.abema-tv.com/lp/assets/7e60afdcf9504884906b3294525a0f9d/240326_kyosuki_nhatrang_profile-minatsu2.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "ラナ": "https://image.p-c2-x.abema-tv.com/lp/assets/3271f259441244ccbc183dd43744f123/240326_kyosuki_nhatrang_profile-rana2.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "りあ": "https://image.p-c2-x.abema-tv.com/lp/assets/d8f9d93777064d4abccf20cacfef19ad/240326_kyosuki_nhatrang_profile-ria2.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "ゆう": "https://image.p-c2-x.abema-tv.com/lp/assets/482994f2dad14135974cf131335b5651/240326_kyosuki_nhatrang_profile-yuu2.jpg?w=680&h=680&fit=clip&q=75&fm=jpg"
+      },
+      "busan-2024": {
+        "てる": "https://image.p-c2-x.abema-tv.com/lp/assets/c5bcbbd191364a2b831b35da78c28e96/71.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "ひろむ": "https://image.p-c2-x.abema-tv.com/lp/assets/44f22082d3d44434ac09fb92405346e1/11.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "そうま": "https://image.p-c2-x.abema-tv.com/lp/assets/8c3375edb89a4b77bdc05bda174fa588/51.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "じゅま": "https://image.p-c2-x.abema-tv.com/lp/assets/5c056d0c1930434188b215b9e19cdd00/31.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "ゆう": "https://image.p-c2-x.abema-tv.com/lp/assets/90c749b8221c483a89fbf81bb8802155/81.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "ねね": "https://image.p-c2-x.abema-tv.com/lp/assets/956d6d2b423d4741ad0602642cfd8e8a/TW-0507-2000-1.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "おとは": "https://image.p-c2-x.abema-tv.com/lp/assets/31ee951dc51141ebbb863b3d4f7258c2/41.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "ひなの": "https://image.p-c2-x.abema-tv.com/lp/assets/ec818aadff164b9caa1dad6bceda05e7/61.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "せいら": "https://image.p-c2-x.abema-tv.com/lp/assets/79c91cbf109d4bb99c658f0e6839c66f/21.jpg?w=680&h=680&fit=clip&q=75&fm=jpg"
+      },
+      "huahin-2024": {
+        "じゅま": "https://image.p-c2-x.abema-tv.com/lp/assets/7fbccbe342134fe6b96adbe9b456456a/240530_kyosuki_huahin_shokai-juma.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "しょう": "https://image.p-c2-x.abema-tv.com/lp/assets/fd535b998a3343d7b038cc776618fd5a/240530_kyosuki_huahin_shokai-sho.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "せな": "https://image.p-c2-x.abema-tv.com/lp/assets/6cdcb49335f4483fb42219748fb266aa/240530_kyosuki_huahin_shokai-sena.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "そうま": "https://image.p-c2-x.abema-tv.com/lp/assets/bc7549370a3d4a1abdbde50b8e5e73df/240530_kyosuki_huahin_shokai-soma.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "れん": "https://image.p-c2-x.abema-tv.com/lp/assets/58a90ea5a859436ab6aa011e2e8c06a3/240530_kyosuki_huahin_shokai-ren.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "のの": "https://image.p-c2-x.abema-tv.com/lp/assets/a8af20c07f1e4998a7780db1e1de7a78/240530_kyosuki_huahin_shokai-nono.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "ひなの": "https://image.p-c2-x.abema-tv.com/lp/assets/d40838e5dc254402a081579205670e1f/240530_kyosuki_huahin_shokai-hinano.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "みあ": "https://image.p-c2-x.abema-tv.com/lp/assets/ad418f2c102746338cfd976e7d9b5a7f/240530_kyosuki_huahin_shokai-mia.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "みつき": "https://image.p-c2-x.abema-tv.com/lp/assets/222ffd90e507475bbb8bb95d0b941efc/240530_kyosuki_huahin_shokai-mizuki.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "りあ": "https://image.p-c2-x.abema-tv.com/lp/assets/393c7ef6570b43dc8da2eee7ed664bec/240530_kyosuki_huahin_shokai-ria.jpg?w=680&h=680&fit=clip&q=75&fm=jpg"
+      },
+      "natsuyasumi-2024": {
+        "じゅま": "https://image.p-c2-x.abema-tv.com/lp/assets/abdf9289d2dd4e62b77d4e897b615c92/20240712_kyosuki_natsuyasumi2024_shokai-juma.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "せな": "https://image.p-c2-x.abema-tv.com/lp/assets/6d2d7ec151294b2ebd71403d6f4d4812/20240712_kyosuki_natsuyasumi2024_shokai-sena.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "けんたろう": "https://image.p-c2-x.abema-tv.com/lp/assets/b46404895f884f38b97467a6f9ccd99e/20240711_kyosuki_natsuyasumi2024_shokai-kentaro.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "りゅうじん": "https://image.p-c2-x.abema-tv.com/lp/assets/18bd9482b8c9415aae27295a6394d9e6/20240711_kyosuki_natsuyasumi2024_shokai-ryujin.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "こうき": "https://image.p-c2-x.abema-tv.com/lp/assets/a527c38db6604603afbc6aa366cc6488/240717_kyosuki_natsuyasumi2024_shokai-koki.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "りあ": "https://image.p-c2-x.abema-tv.com/lp/assets/93211b840e754108a71db151fda71712/20240711_kyosuki_natsuyasumi2024_shokai-riajpg.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "みあ": "https://image.p-c2-x.abema-tv.com/lp/assets/405b3c6293fe4c998a832934a76e705a/20240711_kyosuki_natsuyasumi2024_shokai-mia.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "じゅり": "https://image.p-c2-x.abema-tv.com/lp/assets/97a1026f559a42d9bb54bb1bf55034c2/20240712_kyosuki_natsuyasumi2024_shokai-juri.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "りのん": "https://image.p-c2-x.abema-tv.com/lp/assets/d3443c9dc1ac4b959dad274d45d40ebd/20240712_kyosuki_natsuyasumi2024_shokai-rinon_2.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "その": "https://image.p-c2-x.abema-tv.com/lp/assets/c5328dbbe3b04ab2a34722e1a82826e2/240717_kyosuki_natsuyasumi2024_shokai-sono.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "ゆう": "https://image.p-c2-x.abema-tv.com/lp/assets/69d341808d434439ae462d15fda78afc/240717_kyosuki_natsuyasumi2024_shokai-yuu.jpg?w=680&h=680&fit=clip&q=75&fm=jpg"
+      },
+      "dongtan": {
+        "しょう": "https://image.p-c2-x.abema-tv.com/lp/assets/376cd2b64b4c411f8d8733a0d464b35b/20240829_kyosuki_dongtan_shokai-syo.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "せり": "https://image.p-c2-x.abema-tv.com/lp/assets/de3f1731849046259ebc4f1dd94a54fb/20240829_kyosuki_dongtan_shokai-seri.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "ゆうすけ": "https://image.p-c2-x.abema-tv.com/lp/assets/c327ef410af44a0fa9846e32d22d973f/20240829_kyosuki_dongtan_shokai-yusuke.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "こお": "https://image.p-c2-x.abema-tv.com/lp/assets/26ec756a4ce54bac84d49414dd0db469/20240829_kyosuki_dongtan_shokai-ko.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "きんご": "https://image.p-c2-x.abema-tv.com/lp/assets/2b2bbb3675ca4d4abd29589c37fdaefd/20240829_kyosuki_dongtan_shokai-kingo.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "せいら": "https://image.p-c2-x.abema-tv.com/lp/assets/55b75058b49f4dbfbe49531ba7cb3ec8/20240829_kyosuki_dongtan_shokai-seira.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "まほこ": "https://image.p-c2-x.abema-tv.com/lp/assets/2e898fd8e9824128905b49b0e3cd640c/20240829_kyosuki_dongtan_shokai-mahoko.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "かな": "https://image.p-c2-x.abema-tv.com/lp/assets/3e206cd02149467993118a3b45f5aa02/20240829_kyosuki_dongtan_shokai-kana.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "じゅりな": "https://image.p-c2-x.abema-tv.com/lp/assets/6618e3f777e94601a27c4f82b5a9f7f0/20240829_kyosuki_dongtan_shokai-jurina.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "めいあ": "https://image.p-c2-x.abema-tv.com/lp/assets/ac69eb0dc0f44747aaef11bf5a92aae1/20240829_kyosuki_dongtan_shokai-meia.jpg?w=680&h=680&fit=clip&q=75&fm=jpg"
+      },
+      "gyeongju": {
+        "そうま": "https://image.p-c2-x.abema-tv.com/lp/assets/937eca8c3f92488daf80941d48d3c58f/20241009_kyosuki_gyeongju_shokai-souma.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "こお": "https://image.p-c2-x.abema-tv.com/lp/assets/d07e9f560c304b4cb69f2682099b5220/20241009_kyosuki_gyeongju_shokai-koo.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "きょうすけ": "https://image.p-c2-x.abema-tv.com/lp/assets/d4ee5e3cc108493992e0fd456ccc359e/20241009_kyosuki_gyeongju_shokai-kyousuke.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "だいき": "https://image.p-c2-x.abema-tv.com/lp/assets/643497e2cba04503bece67993e4195ff/20241009_kyosuki_gyeongju_shokai-daiki.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "とうき": "https://image.p-c2-x.abema-tv.com/lp/assets/e04f8688f9724d53ba796aa87b392c2c/20241009_kyosuki_gyeongju_shokai-touki.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "じゅり": "https://image.p-c2-x.abema-tv.com/lp/assets/85136dcf399f4670b49b904ebee822d9/20241009_kyosuki_gyeongju_shokai-juri.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "めいあ": "https://image.p-c2-x.abema-tv.com/lp/assets/4a7b5c8ff2e0444db8c347cf95406bf5/20241009_kyosuki_gyeongju_shokai-meia.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "あやな": "https://image.p-c2-x.abema-tv.com/lp/assets/18e353f9831047f4ac43d067a8257cec/20241009_kyosuki_gyeongju_shokai-ayana.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "めい": "https://image.p-c2-x.abema-tv.com/lp/assets/2a8efee00c4748eeaee093235e6e6551/20241009_kyosuki_gyeongju_shokai-mei.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "れお": "https://image.p-c2-x.abema-tv.com/lp/assets/5b26d2c46e3e4907a02ba716595cc92d/20241009_kyosuki_gyeongju_shokai-reo.jpg?w=680&h=680&fit=clip&q=75&fm=jpg"
+      },
+      "fuyuyasumi-2024": {
+        "たくや": "https://image.p-c2-x.abema-tv.com/lp/assets/b76d66adbc154aa6998cacd95da16476/20241115_fuyuyasumi2024_profile-takuya.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "まのあ": "https://image.p-c2-x.abema-tv.com/lp/assets/2a0fa749c6fc460badb743a4beb92a1d/20241115_fuyuyasumi2024_profile-manoa.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "らいと": "https://image.p-c2-x.abema-tv.com/lp/assets/99b5d5574fad4d608ee7e7ec8af9cae4/20241115_fuyuyasumi2024_profile-raito.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "こう": "https://image.p-c2-x.abema-tv.com/lp/assets/f34b4d0f7e8145cd99f0423825717da2/20241115_fuyuyasumi2024_profile-kou.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "くめはる": "https://image.p-c2-x.abema-tv.com/lp/assets/0ad65de6b7db4bbd8040751f85ebd96f/20241115_fuyuyasumi2024_profile-kumeharu.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "らいち": "https://image.p-c2-x.abema-tv.com/lp/assets/b16ad916787840dc8946a712ac9ed9f7/20241115_fuyuyasumi2024_profile-raichi.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "りのん": "https://image.p-c2-x.abema-tv.com/lp/assets/1e8f2882a40f43fdbb846b0f26e451fb/20241115_fuyuyasumi2024_profile-rinon.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "はるな": "https://image.p-c2-x.abema-tv.com/lp/assets/4fbbccc1468e496e890baa0d63e26118/20241115_fuyuyasumi2024_profile-haruna.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "かずな": "https://image.p-c2-x.abema-tv.com/lp/assets/f5b22a118188495b833abeeea5bda680/20241115_fuyuyasumi2024_profile-kazuna.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "みづき": "https://image.p-c2-x.abema-tv.com/lp/assets/b4062d15b94b42ca910adf94182f7004/20241115_fuyuyasumi2024_profile-mizuki.jpg?w=680&h=680&fit=clip&q=75&fm=jpg",
+        "まほこ": "https://image.p-c2-x.abema-tv.com/lp/assets/dc7c05b3b1aa4ea8a775724139051841/20241115_fuyuyasumi2024_profile-mahoko.jpg?w=680&h=680&fit=clip&q=75&fm=jpg"
+      },
       "sotsugyo-2025-seoul": {
         "たくや": "https://image.p-c2-x.abema-tv.com/lp/assets/57c50f3ce28e4c9baa95d3a3ae19c014/2-1.jpg",
         "ゆうすけ": "https://image.p-c2-x.abema-tv.com/lp/assets/d891a646b161440f84b57bc6be3ce9ce/FD-0107-2000-11.jpg",
@@ -1678,7 +1799,8 @@
 
     function createCard(member) {
       const article = document.createElement("article");
-      const memberPhoto = photoBySeasonNick[selectedSeason]?.[member.nick] || member.photo;
+      const photoSeasonId = member.seasonId || selectedSeason;
+      const memberPhoto = photoBySeasonNick[photoSeasonId]?.[member.nick] || member.photo;
       article.className = "card";
       article.dataset.gender = member.gender;
       article.dataset.prefecture = member.prefecture;
@@ -1723,6 +1845,7 @@
         const season = Object.values(seasons).flat().find((item) => item.id === seasonId);
         return members.map((member) => ({
           ...member,
+          seasonId,
           seasonLabel: season?.label || "編未設定"
         }));
       });
